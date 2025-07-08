@@ -1,3 +1,16 @@
+USERS = {
+    "superuser":
+        {
+            "username": "pm_fletcher",
+            "password": "PositionPM",
+        },
+    "project_manager":
+        {
+            "username": "pm_fletcher",
+            "password": "PositionPM",
+        },
+}
+
 TASK_TYPE_VALUE = [
     "bug",
     "feature",
@@ -8,6 +21,10 @@ TASK_TYPE_VALUE = [
 ]
 
 POSITION_VALUE = {
+    "CTO":
+        {
+            "name": "CTO",
+        },
     "Senior Python Developer":
         {
             "name": "Python Developer",
@@ -30,6 +47,7 @@ POSITION_VALUE = {
     "Project Manager":
         {
             "name": "Project Manager",
+            "user": USERS["project_manager"],
         },
     "QA Engineer":
         {
