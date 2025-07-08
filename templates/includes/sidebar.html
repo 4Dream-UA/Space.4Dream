@@ -8,6 +8,9 @@
     {% endif %}
     <br><br>
     Teamspace
+    {% if user.position.name == "Project Manager" or user.position.name == "CTO" %}
+      <a style="float: right" href="#">+</a>
+    {% endif %}
     <li class="list-group-item"><a href="#">Project</a></li>
     <li class="list-group-item"><a href="#">Members</a></li>
 
@@ -23,7 +26,6 @@
     </form>
   {% else %}
     <form action="{% url 'login' %}" method="get">
-      {% csrf_token %}
       <input class="btn btn-primary" type="submit" value="Login" />
     </form>
   {% endif %}
