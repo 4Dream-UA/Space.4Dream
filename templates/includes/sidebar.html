@@ -1,12 +1,28 @@
 <ul>
   Home
   <li class="list-group-item"><a href="{% url 'home:index' %}">Home</a></li>
-  <li class="list-group-item"><a href="#">Settings</a></li>
-  <li class="list-group-item"><a href="#">Members</a></li>
+  {% if user.is_authenticated %}
+    <li class="list-group-item"><a href="#">Settings</a></li>
+    <li class="list-group-item"><a href="#">Invite</a></li>
+    <br><br>
+    Teamspace
+    <li class="list-group-item"><a href="#">Project</a></li>
+    <li class="list-group-item"><a href="#">Members</a></li>
+
+  {% endif %}
+
   <br><br>
-  Teamspace
-  <li class="list-group-item"><a href="#">Project</a></li>
-  ...
-  <br><br><br>
-  <li class="list-group-item"><a href="#">Invite</a></li>
+
+  {% if user.is_authenticated %}
+
+    <form action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <input class="btn btn-primary" type="submit" value="Logout" />
+    </form>
+  {% else %}
+    <form action="{% url 'login' %}" method="get">
+      {% csrf_token %}
+      <input class="btn btn-primary" type="submit" value="Login" />
+    </form>
+  {% endif %}
 </ul>
