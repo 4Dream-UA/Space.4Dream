@@ -1,0 +1,2 @@
+from .tests_forms.fields_tests import RegisterInviteFormTests
+from .tests_views.login_required_tests import LoginRequiredTests
