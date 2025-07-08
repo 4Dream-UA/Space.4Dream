@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+  <h1>Settings</h1>
+  <i>For change password go to <a href="{% url 'password_change' %}">password_change</a></i>
+  <br><br>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input class="btn btn-primary" type="submit" value="Save">
+  </form>
+{% endblock %}
