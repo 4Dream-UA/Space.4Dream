@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
   <h1>Space 4Dream</h1>
-  <p>Welcome!</p>
+  {% if user.is_authenticated %}
+    <p>Welcome back, {{ user.first_name }} {{ user.last_name }}!</p>
+    <p>Do you ready to work, dear {{ user.position.rank }} {{ user.position.name }}?</p>
+  {% else %}
+    <p>Welcome!</p>
+  {% endif %}
 {% endblock %}
