@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Login:</h1>
-  <form action="{% url 'login' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-info" type="submit" value="Submit">
-    <input type="hidden" name="next" value="{{ next }}">
-  </form>
+  {% if user.is_authenticated %}
+    <h1>Unable for authenticated workers!</h1>
+  {% else %}
+    <h1>Login:</h1>
+    <form action="{% url 'login' %}" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input class="btn btn-info" type="submit" value="Submit">
+      <input type="hidden" name="next" value="{{ next }}">
+    </form>
+  {% endif %}
 {% endblock %}
