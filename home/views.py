@@ -2,8 +2,10 @@ from django.contrib.auth import get_user, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, CreateView
 from django.urls import reverse_lazy
+
+from .forms import RegisterInviteForm
 
 
 class HomePageView(View):
@@ -13,6 +15,12 @@ class HomePageView(View):
         return render(request, self.template_name)
 
 
+class CreateInviteView(LoginRequiredMixin, CreateView):
+    model = get_user_model()
+    form_class = RegisterInviteForm
+    template_name = "home/invite.html"
+    success_url = reverse_lazy("home:index")
+
 class UpdateSettingsView(LoginRequiredMixin, UpdateView):
     model = get_user_model()
     fields = [
@@ -21,7 +29,3 @@ class UpdateSettingsView(LoginRequiredMixin, UpdateView):
               ]
     template_name = "home/settings.html"
     success_url = reverse_lazy("home:index")
-
-class UpdateUserPassword(LoginRequiredMixin, UpdateView):
-    model = get_user_model()
-    fields = []
