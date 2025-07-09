@@ -18,6 +18,7 @@ class Position(models.Model):
 
 class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
 
     def __str__(self):
         return f"({self.position.name}) {self.first_name} {self.last_name}"
@@ -43,7 +44,7 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(
         max_length=63,
-        choices=Status.choices,
+        choices=Status.choices, # noqa -> PyCharm can light it as issue, actually is OK
         default=Status.TODO,
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
