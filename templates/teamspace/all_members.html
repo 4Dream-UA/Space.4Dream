@@ -2,9 +2,10 @@
 
 
 {% block content %}
-  <h1>All members</h1>
+  <h1>All Members</h1>
   {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
     <a class="btn btn-secondary" href="{% url 'teamspace:create_team' %}">Create Team</a>
+    <a class="btn btn-secondary" href="{% url 'home:invite' %}">Invite</a>
   {% endif %}
   
   <br><br>
