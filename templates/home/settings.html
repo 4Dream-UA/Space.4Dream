@@ -5,7 +5,7 @@
   <h1>Settings</h1>
   <i>For change password go to <a href="{% url 'password_change' %}">password_change</a></i>
   <br><br>
-  <form action="" method="post">
+  <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
 
