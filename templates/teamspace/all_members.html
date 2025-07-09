@@ -3,10 +3,40 @@
 
 {% block content %}
   <h1>All members</h1>
-  <a class="btn btn-secondary">Create Team</a>
+  {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+    <a class="btn btn-secondary" href="{% url 'teamspace:create_team' %}">Create Team</a>
+  {% endif %}
   
   <br><br>
   
-  <i>Soon...</i>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Role</th>
+                <th scope="col">Joined</th>
+                <th scope="col">Last Login</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for member in all_members %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ member.first_name }} {{ member.last_name }}</td>
+              {% if member.position.rank != "Employee" %}
+                <td>{{ member.position.rank }} {{ member.position.name }}</td>
+              {% else %}
+                <td>{{ member.position.name }}</td>
+              {% endif %}
+              <td>{{ member.date_joined }}</td>
+              <td>{{ member.last_login }}</td>
+            
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
