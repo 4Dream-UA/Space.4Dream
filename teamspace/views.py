@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import QuerySet
 from django.views.generic import CreateView, ListView
 from django.urls import reverse_lazy
 
@@ -13,7 +14,7 @@ class AllMembersView(LoginRequiredMixin, ListView):
     template_name = "teamspace/all_members.html"
     paginate_by = 7
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
 
         context = super().get_context_data(**kwargs)
 
@@ -22,7 +23,7 @@ class AllMembersView(LoginRequiredMixin, ListView):
         context["search_form"] = SearchForm(initial={"title": title})
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         queryset = Worker.objects.all()
         title = self.request.GET.get("title")
 
@@ -37,6 +38,32 @@ class AllMembersView(LoginRequiredMixin, ListView):
 class CreateProjectView(LoginRequiredMixin, CreateView):
     model = Project
     ...
+
+
+class ListTeamView(LoginRequiredMixin, ListView):
+    model = Team
+    context_object_name = "teams"
+    template_name = "teamspace/teams_list.html"
+    form_class = SearchForm
+
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
+
+        context = super().get_context_data(**kwargs)
+
+        title = self.request.GET.get("title", "")
+
+        context["search_form"] = SearchForm(initial={"title": title})
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        queryset = Team.objects.all()
+        title = self.request.GET.get("title")
+
+        if title:
+            return queryset.filter(name__icontains=title)
+
+
+        return queryset
 
 
 class CreateTeamView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
