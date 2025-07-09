@@ -3,12 +3,12 @@
   <li class="list-group-item"><a href="{% url 'home:index' %}">Home</a></li>
   {% if user.is_authenticated %}
     <li class="list-group-item"><a href="{% url 'home:settings' user.id %}">Settings</a></li>
-    {% if user.position.name == "Project Manager" or user.position.name == "CTO" %}
+    {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
       <li class="list-group-item"><a href="{% url 'home:invite' %}">Invite</a></li>
     {% endif %}
     <br><br>
     Teamspace
-    {% if user.position.name == "Project Manager" or user.position.name == "CTO" %}
+    {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
       <a style="float: right" href="#">+</a>
     {% endif %}
 
