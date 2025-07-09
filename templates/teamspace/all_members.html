@@ -27,7 +27,17 @@
           {% for member in all_members %}
             <tr>
               <th scope="row">{{ member.id }}</th>
-              <td>{{ member.first_name }} {{ member.last_name }}</td>
+            <td>
+              <div class="d-flex align-items-center">
+                {% if member.avatar %}
+                  <img src="{{ member.avatar.url }}" alt="Avatar"
+                       class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                {% else %}
+                  <span class="me-2" style="width: 40px; height: 40px; font-size: 28px;">👤</span>
+                {% endif %}
+                <span>&nbsp&nbsp{{ member.first_name }} {{ member.last_name }}</span>
+              </div>
+            </td>
               {% if member.position.rank != "Employee" %}
                 <td>{{ member.position.rank }} {{ member.position.name }}</td>
               {% else %}
