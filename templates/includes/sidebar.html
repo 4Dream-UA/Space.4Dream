@@ -1,4 +1,12 @@
 <ul>
+<br>
+  <li class="list-group-item">
+    {% if user.avatar %}
+      <img src="{{ user.avatar.url }}" alt="Avatar" style="max-width: 30px;">
+    {% endif %}
+  <a href="{% url 'home:profile' %}">Profile</a>
+  </li>
+  <br><br>
   Home
   <li class="list-group-item"><a href="{% url 'home:index' %}">Home</a></li>
   {% if user.is_authenticated %}
