@@ -2,12 +2,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import CreateView, ListView
 from django.urls import reverse_lazy
 
-from .models import Project, Team
+from .models import Project, Team, Worker
 from config.public_config import invite_able_returning
 
 
 class AllMembersView(LoginRequiredMixin, ListView):
-    model = Team
+    model = Worker
     context_object_name = "all_members"
     template_name = "teamspace/all_members.html"
 
