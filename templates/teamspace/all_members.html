@@ -9,6 +9,9 @@
   
   <br><br>
   
+  {% include 'includes/search.html' %}
+  <br>
+  
 <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped table-sm">
         <thead class="thead-dark">
@@ -23,7 +26,7 @@
         <tbody>
           {% for member in all_members %}
             <tr>
-              <th scope="row">{{ forloop.counter }}</th>
+              <th scope="row">{{ member.id }}</th>
               <td>{{ member.first_name }} {{ member.last_name }}</td>
               {% if member.position.rank != "Employee" %}
                 <td>{{ member.position.rank }} {{ member.position.name }}</td>
