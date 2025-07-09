@@ -29,6 +29,7 @@
             <tr>
               <th scope="row">{{ member.id }}</th>
             <td>
+            <a href="{% url 'home:user_detail' pk=member.id %}">
               <div class="d-flex align-items-center">
                 {% if member.avatar %}
                   <img src="{{ member.avatar.url }}" alt="Avatar"
@@ -38,6 +39,7 @@
                 {% endif %}
                 <span>&nbsp&nbsp{{ member.first_name }} {{ member.last_name }}</span>
               </div>
+            </a>
             </td>
               {% if member.position.rank != "Employee" %}
                 <td>{{ member.position.rank }} {{ member.position.name }}</td>

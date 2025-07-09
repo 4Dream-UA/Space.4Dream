@@ -33,7 +33,7 @@
       <div class="row g-2">
         {% for worker in team.workers.all %}
           <div class="col-12 col-sm-6 col-md-4">
-            <a href="#" class="text-decoration-none text-dark">
+            <a href="{% url 'home:user_detail' pk=worker.id %}" class="text-decoration-none text-dark">
               <div class="d-flex align-items-center border rounded p-2 h-100" style="gap: 8px;">
                 {% if worker.avatar %}
                   <img src="{{ worker.avatar.url }}" alt="Avatar"
