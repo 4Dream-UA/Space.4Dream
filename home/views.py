@@ -2,7 +2,7 @@ from django.contrib.auth import get_user, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import UpdateView, CreateView
+from django.views.generic import UpdateView, CreateView, ListView
 from django.urls import reverse_lazy
 
 from .forms import RegisterInviteForm
@@ -26,6 +26,11 @@ class UpdateSettingsView(LoginRequiredMixin, UpdateView):
     fields = [
         "username", "email",
         "first_name", "last_name",
+        "avatar"
               ]
     template_name = "home/settings.html"
     success_url = reverse_lazy("home:index")
+
+class ProfileView(LoginRequiredMixin, ListView):
+    model = get_user_model()
+    template_name = "home/profile.html"
