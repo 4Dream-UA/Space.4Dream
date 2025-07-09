@@ -11,8 +11,27 @@
     {% if user.position.name == "Project Manager" or user.position.name == "CTO" %}
       <a style="float: right" href="#">+</a>
     {% endif %}
-    <li class="list-group-item"><a href="#">Project</a></li>
-    <li class="list-group-item"><a href="#">Members</a></li>
+
+    <li class="list-group-item">Projects:</li>
+
+    <li class="list-group-item">
+      <div onclick="toggleSublist(this)">
+        ▼ Project 1
+      </div>
+      <ul class="sublist hidden">
+        <li class="list-group-item">
+          <a href="#">Doc hub</a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="list-group-item" onclick="toggleSublist(this)">▼ Members:</li>
+
+      <ul class="sublist hidden">
+        <li class="list-group-item">
+          <a href="{% url 'teamspace:all_members' %}">All</a>
+        </li>
+      </ul>
 
   {% endif %}
 
@@ -30,3 +49,24 @@
     </form>
   {% endif %}
 </ul>
+
+<style>
+  .sublist {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    border-left: 2px dashed #ccc;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  function toggleSublist(toggleElement) {
+    const sublist = toggleElement.nextElementSibling;
+
+    sublist.classList.toggle("hidden");
+    toggleElement.classList.toggle("open");
+  }
+</script>
