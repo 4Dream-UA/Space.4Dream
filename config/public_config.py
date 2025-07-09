@@ -133,3 +133,14 @@ POSITION_VALUE = {
             "user": "NotUserNow",
         },
 }
+
+def invite_able_returning() -> list:
+
+    list_ = list()
+
+    for value in POSITION_VALUE.values():
+
+        if value["invite_able"]:
+            list_.append(value["name"])
+
+    return list_
