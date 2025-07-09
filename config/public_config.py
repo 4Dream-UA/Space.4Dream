@@ -36,10 +36,20 @@ USERS = {
             "username": "ghost",
             "password": "PositionCTO",
         },
+    "senior_project_manager":
+        {
+            "username": "y.yamatano",
+            "password": "PositionSPM",
+        },
     "project_manager":
         {
             "username": "pm_fletcher",
             "password": "PositionPM",
+        },
+    "hr_manager":
+        {
+            "username": "o.foloronce",
+            "password": "PositionHRM",
         },
     "senior_python_developer":
         {
@@ -50,6 +60,31 @@ USERS = {
         {
             "username": "f.lorenco",   # noqa -> For PyCharm it's uncorrect str 'lorenco'
             "password": "PositionMPD",
+        },
+    "java_script_developer":
+        {
+            "username": "t.kenlong",
+            "password": "PositionJS",
+        },
+    "qa_engineer":
+        {
+            "username": "l.kokochenko",
+            "password": "PositionQAE",
+        },
+    "designer":
+        {
+            "username": "o.umirenko",
+            "password": "PositionD",
+        },
+    "senior_devops":
+        {
+            "username": "g.morgan",
+            "password": "PositionSDO",
+        },
+    "devops":
+        {
+            "username": "k.lop",
+            "password": "PositionDO",
         }
 }
 
@@ -81,14 +116,14 @@ POSITION_VALUE = {
             "name": "JavaScript Developer",
             "rank:": EMPLOYEE,
             "invite_able": UNABLE_TO_INVITE,
-            "user": "NotUserNow",
+            "user": USERS["java_script_developer"],
         },
     "Senior Project Manager":
         {
             "name": "Project Manager",
             "rank:": "Senior",
             "invite_able": True,
-            "user": "NotUserNow",
+            "user": USERS["senior_project_manager"],
         },
     "Project Manager":
         {
@@ -102,35 +137,35 @@ POSITION_VALUE = {
             "name": "HR Manager",
             "rank:": EMPLOYEE,
             "invite_able": True,
-            "user": "NotUserNow",
+            "user": USERS["hr_manager"],
         },
     "QA Engineer":
         {
             "name": "QA Engineer",
             "rank:": EMPLOYEE,
             "invite_able": UNABLE_TO_INVITE,
-            "user": "NotUserNow",
+            "user": USERS["qa_engineer"],
         },
     "Designer":
         {
             "name": "Designer",
             "rank:": EMPLOYEE,
             "invite_able": UNABLE_TO_INVITE,
-            "user": "NotUserNow",
+            "user": USERS["designer"],
         },
     "Senior DevOps":
         {
             "name": "DevOps",
             "rank:": "Senior",
             "invite_able": UNABLE_TO_INVITE,
-            "user": "NotUserNow",
+            "user": USERS["senior_devops"],
         },
     "DevOps":
         {
             "name": "DevOps",
             "rank:": EMPLOYEE,
             "invite_able": UNABLE_TO_INVITE,
-            "user": "NotUserNow",
+            "user": USERS["devops"],
         },
 }
 
