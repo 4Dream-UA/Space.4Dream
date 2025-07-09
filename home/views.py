@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import UpdateView, CreateView, ListView
+from django.views.generic import UpdateView, CreateView, ListView, DetailView
 from django.urls import reverse_lazy
 
 from config.public_config import invite_able_returning
@@ -40,3 +40,9 @@ class UpdateSettingsView(LoginRequiredMixin, UpdateView):
 class ProfileView(LoginRequiredMixin, ListView):
     model = get_user_model()
     template_name = "home/profile.html"
+
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    model = get_user_model()
+    template_name = "home/user_detail.html"
+    context_object_name = "d_user"
