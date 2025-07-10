@@ -2,6 +2,7 @@
 
 
 {% block content %}
+  <br>
   <h1>All Teams</h1>
   {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
     <a class="btn btn-secondary" href="{% url 'teamspace:create_team' %}">Create Team</a>
@@ -19,6 +20,9 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Name</th>
+        {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+          <th scope="col">Action</th>
+        {% endif %}
         <th scope="col">Description</th>
         <th scope="col">Workers</th>
       </tr>
@@ -28,6 +32,17 @@
   <tr>
     <th scope="row">{{ team.id }}</th>
     <td>{{ team.name }}</td>
+
+    {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+        <th scope="col">
+          <a class="btn btn-primary" href="{% url 'teamspace:edit_team' pk=team.id %}">
+            E
+          </a> |
+          <a class="btn btn-danger" href="{% url 'teamspace:delete_team' pk=team.id %}">
+            D
+          </a>
+        </th>
+    {% endif %}
     <td>{{ team.description }}</td>
     <td>
       <div class="row g-2">
