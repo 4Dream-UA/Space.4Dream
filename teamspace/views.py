@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import QuerySet
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
 
 from .models import Project, Team, Worker
@@ -64,6 +64,27 @@ class DeleteMembersView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self) -> bool:
         if (self.request.user.position.name in invite_able_returning()
                 and self.request.user.position_priority < self.get_object().position_priority):
+            return True
+        return False
+
+
+class MemberProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Project
+    template_name = "teamspace/members_in_project.html"
+    context_object_name = "project"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = self.get_object()
+        workers = Worker.objects.filter(team__in=project.teams.all()).distinct()
+        context["members"] = workers
+        return context
+
+    def test_func(self):
+        if (
+            self.get_object()
+            in Project.objects.filter(teams__in=self.request.user.team_set.all()).distinct()
+        ):
             return True
         return False
 
