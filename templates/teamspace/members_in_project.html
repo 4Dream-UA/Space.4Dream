@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+  <br>
+  <h2>Members of Project: {{ project.name }}</h2>
+  <p>{{ project.description }}</p>
+  <br>
+
+  {% if members %}
+    <table class="table table-sm table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Position</th>
+          <th>Full Name</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for member in members %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ member.position.name }}</td>
+            <td>
+                {% if member.avatar %}
+                  <img src="{{ member.avatar.url }}" alt="Avatar"
+                       class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                {% else %}
+                  <span class="me-2" style="width: 40px; height: 40px; font-size: 28px;">👤</span>
+                {% endif %}
+            {{ member.first_name }} {{ member.last_name }}</td>
+            <td>{{ member.email }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No members assigned to this project.</p>
+  {% endif %}
+{% endblock %}
