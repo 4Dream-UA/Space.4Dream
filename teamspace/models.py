@@ -50,6 +50,9 @@ class Task(models.Model):
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
+    def __str__(self):
+        return f"({self.task_type.name}) {self.name}"
+
 
 class Team(models.Model):
     name = models.CharField(max_length=255)
