@@ -78,6 +78,7 @@ class ListTeamView(LoginRequiredMixin, ListView):
     context_object_name = "teams"
     template_name = "teamspace/teams_list.html"
     form_class = SearchForm
+    paginate_by = 3
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
 
@@ -104,6 +105,19 @@ class CreateTeamView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     fields = '__all__'
     template_name = "teamspace/create_team.html"
     success_url = reverse_lazy("teamspace:all_members")
+
+    def test_func(self) -> bool:
+        if self.request.user.position.name in invite_able_returning():
+            return True
+        return False
+
+
+class EditTeamView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Team
+    fields = '__all__'
+    context_object_name = "team"
+    template_name = "teamspace/update_team.html"
+    success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
         if self.request.user.position.name in invite_able_returning():
