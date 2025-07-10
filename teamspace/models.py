@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
+from config.public_config import priority_returning
+
 
 class Position(models.Model):
     name = models.CharField(max_length=255)
@@ -19,9 +21,22 @@ class Position(models.Model):
 class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    position_priority = models.PositiveSmallIntegerField(default=99)
+
+    def save(self, *args, **kwargs):
+        priority = priority_returning()
+        if self.position.rank != "Employee":
+            self.position_priority = priority.get(f"{self.position.rank} {self.position.name}", 99)
+        else:
+            self.position_priority = priority.get({self.position.name}, 99)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"({self.position.name}) {self.first_name} {self.last_name}"
+
+    class Meta:
+        ordering = ["position_priority", "last_name"]
 
 
 class TaskType(models.Model):
@@ -64,3 +79,6 @@ class Project(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     teems = models.ManyToManyField(Team)
+
+
+
