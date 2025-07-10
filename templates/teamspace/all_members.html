@@ -19,6 +19,9 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
+                {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+                  <th scope="col">Action</th>
+                {% endif %}
                 <th scope="col">Role</th>
                 <th scope="col">Joined</th>
                 <th scope="col">Last Login</th>
@@ -27,7 +30,7 @@
         <tbody>
           {% for member in all_members %}
             <tr>
-              <th scope="row">{{ member.id }}</th>
+              <th scope="row">{{ forloop.counter }}</th>
             <td>
             <a href="{% url 'home:user_detail' pk=member.id %}">
               <div class="d-flex align-items-center">
@@ -39,6 +42,22 @@
                 {% endif %}
                 <span>&nbsp&nbsp{{ member.first_name }} {{ member.last_name }}</span>
               </div>
+              {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+                {% if user.position_priority < member.position_priority %}
+                  <th scope="col">
+                    <a class="btn btn-primary" href="{% url 'teamspace:edit_member' pk=member.id %}">
+                      E
+                    </a> |
+                    <a class="btn btn-danger" href="{% url 'teamspace:delete_member' pk=member.id %}">
+                      D
+                    </a>
+                  </th>
+                {% else %}
+                  <th>
+                    <p>Unable</p>
+                  </th>
+                {% endif %}
+              {% endif %}
             </a>
             </td>
               {% if member.position.rank != "Employee" %}
