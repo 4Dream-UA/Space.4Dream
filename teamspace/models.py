@@ -74,11 +74,20 @@ class Team(models.Model):
     description = models.TextField()
     workers = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
+    def __str__(self):
+        return self.name
+
+
+class Document(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    document = models.FileField(upload_to="documents/")
+    worker = models.ForeignKey(Worker, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+
 
 class Project(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    teems = models.ManyToManyField(Team)
-
-
-
+    teams = models.ManyToManyField(Team)
+    doc_hub = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
