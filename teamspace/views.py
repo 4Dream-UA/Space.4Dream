@@ -24,7 +24,7 @@ class AllMembersView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self) -> QuerySet:
-        queryset = Worker.objects.all()
+        queryset = Worker.objects.select_related("position")
         title = self.request.GET.get("title")
 
         if title:
@@ -56,7 +56,7 @@ class ListTeamView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self) -> QuerySet:
-        queryset = Team.objects.all()
+        queryset = Team.objects.prefetch_related("workers__position")
         title = self.request.GET.get("title")
 
         if title:
