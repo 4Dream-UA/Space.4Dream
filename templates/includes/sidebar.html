@@ -36,11 +36,13 @@
             <a href="#">Tasks</a>
           </li>
           <li class="list-group-item">
-            <a href="#">Members</a>
+            <a href="{% url 'teamspace:member_project' pk=project.id %}">Members</a>
           </li>
         </ul>
       </li>
       {% endfor %}
+      {% empty %}
+      <i>Nothing...</i>
     {% endfor %}
 
     <li class="list-group-item" onclick="toggleSublist(this)">▼ Members:</li>
