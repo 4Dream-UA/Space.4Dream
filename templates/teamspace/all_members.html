@@ -8,12 +8,12 @@
     <a class="btn btn-secondary" href="{% url 'teamspace:create_team' %}">Create Team</a>
     <a class="btn btn-secondary" href="{% url 'home:invite' %}">Invite</a>
   {% endif %}
-  
+
   <br><br>
-  
+
   {% include 'includes/search.html' %}
   <br>
-  
+
 <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped table-sm">
         <thead class="thead-dark">
@@ -68,7 +68,7 @@
               {% endif %}
               <td>{{ member.date_joined }}</td>
               <td>{{ member.last_login }}</td>
-            
+
             </tr>
           {% endfor %}
         </tbody>
