@@ -17,21 +17,31 @@
     <br><br>
     Teamspace
     {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
-      <a style="float: right" href="#">+</a>
+      <a style="float: right" href="{% url 'teamspace:create_project' %}">+</a>
     {% endif %}
 
     <li class="list-group-item">Projects:</li>
 
-    <li class="list-group-item">
-      <div onclick="toggleSublist(this)">
-        ▼ Project 1
-      </div>
-      <ul class="sublist hidden">
-        <li class="list-group-item">
-          <a href="#">Doc hub</a>
-        </li>
-      </ul>
-    </li>
+    {% for team in user.team_set.all %}
+      {% for project in team.project_set.all %}
+      <li class="list-group-item">
+        <div onclick="toggleSublist(this)">
+          ▼ {{ project.name }}
+        </div>
+        <ul class="sublist hidden">
+          <li class="list-group-item">
+            <a href="#">DocHub</a>
+          </li>
+          <li class="list-group-item">
+            <a href="#">Tasks</a>
+          </li>
+          <li class="list-group-item">
+            <a href="#">Members</a>
+          </li>
+        </ul>
+      </li>
+      {% endfor %}
+    {% endfor %}
 
     <li class="list-group-item" onclick="toggleSublist(this)">▼ Members:</li>
 
