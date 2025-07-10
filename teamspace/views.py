@@ -104,7 +104,7 @@ class CreateTeamView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Team
     fields = '__all__'
     template_name = "teamspace/create_team.html"
-    success_url = reverse_lazy("teamspace:all_members")
+    success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
         if self.request.user.position.name in invite_able_returning():
@@ -117,6 +117,18 @@ class EditTeamView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = '__all__'
     context_object_name = "team"
     template_name = "teamspace/update_team.html"
+    success_url = reverse_lazy("teamspace:teams_list")
+
+    def test_func(self) -> bool:
+        if self.request.user.position.name in invite_able_returning():
+            return True
+        return False
+
+class DeleteTeamView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Team
+    fields = '__all__'
+    context_object_name = "team"
+    template_name = "teamspace/delete_team.html"
     success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
