@@ -70,7 +70,14 @@ class DeleteMembersView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class CreateProjectView(LoginRequiredMixin, CreateView):
     model = Project
-    ...
+    fields = ["name", "description", "teams"]
+    template_name = "teamspace/create_project.html"
+    success_url = reverse_lazy("teamspace:all_members")
+
+    def test_func(self) -> bool:
+        if self.request.user.position.name in invite_able_returning():
+            return True
+        return False
 
 
 class ListTeamView(LoginRequiredMixin, ListView):
@@ -123,6 +130,7 @@ class EditTeamView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user.position.name in invite_able_returning():
             return True
         return False
+
 
 class DeleteTeamView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Team
