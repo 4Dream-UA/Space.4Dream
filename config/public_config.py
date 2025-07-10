@@ -95,79 +95,84 @@ POSITION_VALUE = {
             "name": "CTO",
             "rank": EMPLOYEE,
             "invite_able": True,
-            "user": USERS["cto"],
-        },
-    "Senior Python Developer":
-        {
-            "name": "Python Developer",
-            "rank:": "Senior",
-            "invite_able": UNABLE_TO_INVITE,
-            "user": USERS["senior_python_developer"],
-        },
-    "Middle Python Developer":
-        {
-            "name": "Python Developer",
-            "rank:": "Middle",
-            "invite_able": UNABLE_TO_INVITE,
-            "user": USERS["middle_python_developer"],
-        },
-    "JavaScript Developer":
-        {
-            "name": "JavaScript Developer",
-            "rank:": EMPLOYEE,
-            "invite_able": UNABLE_TO_INVITE,
-            "user": USERS["java_script_developer"],
+            "priority": 1,
         },
     "Senior Project Manager":
         {
             "name": "Project Manager",
             "rank:": "Senior",
             "invite_able": True,
-            "user": USERS["senior_project_manager"],
+            "priority": 2,
         },
     "Project Manager":
         {
             "name": "Project Manager",
             "rank:": EMPLOYEE,
             "invite_able": True,
-            "user": USERS["project_manager"],
+            "priority": 3,
         },
     "HR Manager":
         {
             "name": "HR Manager",
             "rank:": EMPLOYEE,
             "invite_able": True,
-            "user": USERS["hr_manager"],
+            "priority": 4,
         },
-    "QA Engineer":
+    "Senior Python Developer":
         {
-            "name": "QA Engineer",
+            "name": "Python Developer",
+            "rank:": "Senior",
+            "invite_able": UNABLE_TO_INVITE,
+            "priority": 5,
+        },
+    "Middle Python Developer":
+        {
+            "name": "Python Developer",
+            "rank:": "Middle",
+            "invite_able": UNABLE_TO_INVITE,
+            "priority": 6,
+        },
+    "JavaScript Developer":
+        {
+            "name": "JavaScript Developer",
             "rank:": EMPLOYEE,
             "invite_able": UNABLE_TO_INVITE,
-            "user": USERS["qa_engineer"],
-        },
-    "Designer":
-        {
-            "name": "Designer",
-            "rank:": EMPLOYEE,
-            "invite_able": UNABLE_TO_INVITE,
-            "user": USERS["designer"],
+            "priority": 7,
         },
     "Senior DevOps":
         {
             "name": "DevOps",
             "rank:": "Senior",
             "invite_able": UNABLE_TO_INVITE,
-            "user": USERS["senior_devops"],
+            "priority": 8,
         },
     "DevOps":
         {
             "name": "DevOps",
             "rank:": EMPLOYEE,
             "invite_able": UNABLE_TO_INVITE,
-            "user": USERS["devops"],
+            "priority": 9,
+        },
+    "QA Engineer":
+        {
+            "name": "QA Engineer",
+            "rank:": EMPLOYEE,
+            "invite_able": UNABLE_TO_INVITE,
+            "priority": 10,
+        },
+    "Designer":
+        {
+            "name": "Designer",
+            "rank:": EMPLOYEE,
+            "invite_able": UNABLE_TO_INVITE,
+            "priority": 11,
         },
 }
+
+
+###############################################################
+# FUNCTIONS RETURNING
+###############################################################
 
 def invite_able_returning() -> list:
 
@@ -179,3 +184,12 @@ def invite_able_returning() -> list:
             list_.append(value["name"])
 
     return list_
+
+def priority_returning() -> dict:
+    dict_ = dict()
+
+
+    for key, value in POSITION_VALUE.items():
+        dict_[key] = value["priority"]
+
+    return dict_
