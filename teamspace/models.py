@@ -28,7 +28,7 @@ class Worker(AbstractUser):
         if self.position.rank != "Employee":
             self.position_priority = priority.get(f"{self.position.rank} {self.position.name}", 99)
         else:
-            self.position_priority = priority.get({self.position.name}, 99)
+            self.position_priority = priority.get(self.position.name, 99)
 
         super().save(*args, **kwargs)
 
