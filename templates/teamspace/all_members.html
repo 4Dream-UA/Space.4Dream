@@ -2,6 +2,7 @@
 
 
 {% block content %}
+  <br>
   <h1>All Members</h1>
   {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
     <a class="btn btn-secondary" href="{% url 'teamspace:create_team' %}">Create Team</a>
