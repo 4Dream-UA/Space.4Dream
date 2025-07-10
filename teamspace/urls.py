@@ -3,7 +3,8 @@ from django.urls import path
 
 from .views import (
     AllMembersView, CreateTeamView, ListTeamView,
-    EditMembersView, DeleteMembersView, EditTeamView, DeleteTeamView
+    EditMembersView, DeleteMembersView, EditTeamView, DeleteTeamView,
+    CreateProjectView
 )
 
 app_name = "teamspace"
@@ -16,4 +17,5 @@ urlpatterns = [
     path("create_team/", CreateTeamView.as_view(), name="create_team"),
     path("update_team/<int:pk>", EditTeamView.as_view(), name="edit_team"),
     path("delete_team/<int:pk>", DeleteTeamView.as_view(), name="delete_team"),
+    path("create_project/", CreateProjectView.as_view(), name="create_project"),
 ]
