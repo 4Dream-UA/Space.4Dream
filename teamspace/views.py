@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import QuerySet
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 from .models import Project, Team, Worker
 from .forms import SearchForm
 from config.public_config import invite_able_returning
+
 
 
 class AllMembersView(LoginRequiredMixin, ListView):
@@ -33,6 +34,38 @@ class AllMembersView(LoginRequiredMixin, ListView):
 
 
         return queryset
+
+
+class EditMembersView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Worker
+    context_object_name = "member"
+    template_name = "teamspace/update_member.html"
+    fields = [
+        "username", "email",
+        "first_name", "last_name",
+        "avatar", "position_priority",
+        "position",
+    ]
+    success_url = reverse_lazy("teamspace:all_members")
+
+    def test_func(self) -> bool:
+        if (self.request.user.position.name in invite_able_returning()
+                and self.request.user.position_priority < self.get_object().position_priority):
+            return True
+        return False
+
+
+class DeleteMembersView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Worker
+    context_object_name = "member"
+    template_name = "teamspace/delete_member.html"
+    success_url = reverse_lazy("teamspace:all_members")
+
+    def test_func(self) -> bool:
+        if (self.request.user.position.name in invite_able_returning()
+                and self.request.user.position_priority < self.get_object().position_priority):
+            return True
+        return False
 
 
 class CreateProjectView(LoginRequiredMixin, CreateView):
