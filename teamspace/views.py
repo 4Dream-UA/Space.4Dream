@@ -225,9 +225,26 @@ class CompleteTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             kwargs={"pk": Task.objects.get(pk=self.kwargs["pk"]).project.id}
         )
 
-
     def test_func(self):
         if self.request.user == Task.objects.get(pk=self.kwargs["pk"]).created_by:
+            return True
+        return False
+
+
+class UpdateTaskStatusView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Task
+    context_object_name = "task"
+    template_name = "teamspace/projects/status_task.html"
+    fields = ["priority"]
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "teamspace:task_project",
+            kwargs={"pk": Task.objects.get(pk=self.kwargs["pk"]).project.id}
+        )
+
+    def test_func(self):
+        if self.request.user in Task.objects.get(pk=self.kwargs["pk"]).assignees.all():
             return True
         return False
 
