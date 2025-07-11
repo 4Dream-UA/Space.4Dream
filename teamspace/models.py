@@ -102,3 +102,6 @@ class Project(models.Model):
     description = models.TextField()
     teams = models.ManyToManyField(Team)
     doc_hub = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
