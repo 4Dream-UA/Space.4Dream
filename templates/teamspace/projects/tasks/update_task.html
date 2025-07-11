@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+  <br>
+  <h1>Update Task!</h1>
+
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <i>Be careful with transfer function!</i>
+    <input type="submit" value="Update!">
+  </form>
+{% endblock %}
