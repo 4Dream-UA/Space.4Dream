@@ -6,7 +6,7 @@ from .views import (
     EditMembersView, DeleteMembersView, EditTeamView, DeleteTeamView,
     CreateProjectView, MemberProjectView, ListProjectView,
     UpdateProjectView, DeleteProjectView, TaskProjectView,
-    CreateTaskView
+    CreateTaskView, CompleteTaskView
 )
 
 app_name = "teamspace"
@@ -26,4 +26,5 @@ urlpatterns = [
     path("member_project/<int:pk>/", MemberProjectView.as_view(), name="member_project"),
     path("task_project/<int:pk>/", TaskProjectView.as_view(), name="task_project"),
     path("create_task/<int:pk>", CreateTaskView.as_view(), name="create_task"),
+    path("complete_task/<int:pk>", CompleteTaskView.as_view(), name="complete_task"),
 ]
