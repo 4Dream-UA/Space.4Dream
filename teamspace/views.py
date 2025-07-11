@@ -142,7 +142,7 @@ class DeleteProjectView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class MemberProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Project
     context_object_name = "project"
-    template_name = "teamspace/projects/members_in_project.html"
+    template_name = "teamspace/projects/members/members_in_project.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -163,7 +163,7 @@ class MemberProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 class TaskProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Project
     context_object_name = "project"
-    template_name = "teamspace/projects/task_in_project.html"
+    template_name = "teamspace/projects/tasks/task_in_project.html"
     paginate_by = 4
 
     def get_context_data(self, **kwargs):
@@ -179,9 +179,27 @@ class TaskProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return project.teams.filter(id__in=self.request.user.team_set.values("id")).exists()
 
 
+class UpdateTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Task
+    context_object_name = "task"
+    template_name = "teamspace/projects/tasks/update_task.html"
+    fields = "__all__"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "teamspace:task_project",
+            kwargs={"pk": Task.objects.get(pk=self.kwargs["pk"]).project.id}
+        )
+
+    def test_func(self) -> bool:
+        if self.request.user.position.name in invite_able_returning():
+            return True
+        return False
+
+
 class CreateTaskView(LoginRequiredMixin, CreateView):
     model = Task
-    template_name = "teamspace/projects/create_task.html"
+    template_name = "teamspace/projects/tasks/create_task.html"
     fields = [
         "name", "description", "deadline",
         "task_type", "assignees",
@@ -212,7 +230,7 @@ class CreateTaskView(LoginRequiredMixin, CreateView):
 class CompleteTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Task
     context_object_name = "task"
-    template_name = "teamspace/projects/complete_task.html"
+    template_name = "teamspace/projects/tasks/complete_task.html"
     fields = ["is_completed"]
 
     def form_valid(self, form):
@@ -234,7 +252,7 @@ class CompleteTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class UpdateTaskStatusView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Task
     context_object_name = "task"
-    template_name = "teamspace/projects/status_task.html"
+    template_name = "teamspace/projects/tasks/status_task.html"
     fields = ["priority"]
 
     def get_success_url(self):
