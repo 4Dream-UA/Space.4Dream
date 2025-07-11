@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+  <br>
+  <h1>Sure?</h1>
+  <i>Put 'Yes' if `{{ task.name }}` task really do!</i>
+
+  <form method="post" action="">
+    {% csrf_token %}
+    <br><br>
+    <input class="btn btn-primary" type="submit" value="Yes!">
+  </form>
+{% endblock %}
