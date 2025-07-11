@@ -3,16 +3,19 @@ from django.db.models import QuerySet
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
 
-from .models import Project, Team, Worker
+from .models import Project, Team, Worker, Task
 from .forms import SearchForm
 from config.public_config import invite_able_returning
 
 
+###############################################################
+# MEMBER VIEW
+###############################################################
 
 class AllMembersView(LoginRequiredMixin, ListView):
     model = Worker
     context_object_name = "all_members"
-    template_name = "teamspace/all_members.html"
+    template_name = "teamspace/members/all_members.html"
     paginate_by = 7
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
@@ -39,7 +42,7 @@ class AllMembersView(LoginRequiredMixin, ListView):
 class EditMembersView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Worker
     context_object_name = "member"
-    template_name = "teamspace/update_member.html"
+    template_name = "teamspace/members/update_member.html"
     fields = [
         "username", "email",
         "first_name", "last_name",
@@ -58,7 +61,7 @@ class EditMembersView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class DeleteMembersView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Worker
     context_object_name = "member"
-    template_name = "teamspace/delete_member.html"
+    template_name = "teamspace/members/delete_member.html"
     success_url = reverse_lazy("teamspace:all_members")
 
     def test_func(self) -> bool:
@@ -68,31 +71,15 @@ class DeleteMembersView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-class MemberProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    model = Project
-    template_name = "teamspace/members_in_project.html"
-    context_object_name = "project"
+###############################################################
+# PROJECT VIEW
+###############################################################
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        project = self.get_object()
-        workers = Worker.objects.filter(team__in=project.teams.all()).distinct()
-        context["members"] = workers
-        return context
-
-    def test_func(self):
-        if (
-            self.get_object()
-            in Project.objects.filter(teams__in=self.request.user.team_set.all()).distinct()
-        ):
-            return True
-        return False
-
-
+# ---> General-Project Views
 class CreateProjectView(LoginRequiredMixin, CreateView):
     model = Project
+    template_name = "teamspace/projects/create_project.html"
     fields = ["name", "description", "teams"]
-    template_name = "teamspace/create_project.html"
     success_url = reverse_lazy("teamspace:all_members")
 
     def test_func(self) -> bool:
@@ -103,8 +90,8 @@ class CreateProjectView(LoginRequiredMixin, CreateView):
 
 class ListProjectView(LoginRequiredMixin, ListView):
     model = Project
-    template_name = "teamspace/projects_list.html"
     context_object_name = "projects"
+    template_name = "teamspace/projects/projects_list.html"
     form_class = SearchForm
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
@@ -129,8 +116,8 @@ class ListProjectView(LoginRequiredMixin, ListView):
 
 class UpdateProjectView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Project
-    template_name = "teamspace/update_project.html"
     context_object_name = "project"
+    template_name = "teamspace/projects/update_project.html"
     fields = ["name", "description", "teams"]
     success_url = reverse_lazy("teamspace:project_list")
 
@@ -142,8 +129,8 @@ class UpdateProjectView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class DeleteProjectView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Project
-    template_name = "teamspace/delete_project.html"
     context_object_name = "project"
+    template_name = "teamspace/projects/delete_project.html"
     success_url = reverse_lazy("teamspace:project_list")
 
     def test_func(self) -> bool:
@@ -151,11 +138,54 @@ class DeleteProjectView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+# ---> Member-Project Views
+class MemberProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Project
+    context_object_name = "project"
+    template_name = "teamspace/projects/members_in_project.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = self.get_object()
+        workers = Worker.objects.filter(team__in=project.teams.all()).distinct()
+        context["members"] = workers
+        return context
+
+    def test_func(self):
+        if (
+            self.get_object()
+            in Project.objects.filter(teams__in=self.request.user.team_set.all()).distinct()
+        ):
+            return True
+        return False
+
+# ---> Task-Project Views
+class TaskProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Project
+    context_object_name = "project"
+    template_name = "teamspace/projects/task_in_project.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = self.get_object()
+        context["tasks"] = Task.objects.filter(
+            assignees__team__in=project.teams.all()
+        ).distinct()
+        return context
+
+    def test_func(self):
+        project = self.get_object()
+        return project.teams.filter(id__in=self.request.user.team_set.values("id")).exists()
+
+
+###############################################################
+# TEAM VIEW
+###############################################################
 
 class ListTeamView(LoginRequiredMixin, ListView):
     model = Team
     context_object_name = "teams"
-    template_name = "teamspace/teams_list.html"
+    template_name = "teamspace/teams/teams_list.html"
     form_class = SearchForm
     paginate_by = 3
 
@@ -181,8 +211,8 @@ class ListTeamView(LoginRequiredMixin, ListView):
 
 class CreateTeamView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Team
+    template_name = "teamspace/teams/create_team.html"
     fields = '__all__'
-    template_name = "teamspace/create_team.html"
     success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
@@ -193,9 +223,9 @@ class CreateTeamView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class EditTeamView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Team
-    fields = '__all__'
     context_object_name = "team"
-    template_name = "teamspace/update_team.html"
+    template_name = "teamspace/teams/update_team.html"
+    fields = '__all__'
     success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
@@ -206,9 +236,9 @@ class EditTeamView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class DeleteTeamView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Team
-    fields = '__all__'
     context_object_name = "team"
-    template_name = "teamspace/delete_team.html"
+    template_name = "teamspace/teams/delete_team.html"
+    fields = '__all__'
     success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
