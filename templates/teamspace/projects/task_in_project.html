@@ -8,7 +8,11 @@
   {% if user.position.name == "Project Manager" or user.position.name == "CTO" %}
     <a href="{% url 'teamspace:update_project' pk=project.id %}" class="btn btn-sm btn-primary">Edit</a>
     <a href="{% url 'teamspace:delete_project' pk=project.id %}" class="btn btn-sm btn-danger">Delete</a>
+    <br><br>
   {% endif %}
+
+    <a class="btn btn-primary" href="{% url 'teamspace:create_task' pk=project.id %}">Add Task</a>
+
 
   <br><br>
 
@@ -32,10 +36,54 @@
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ task.name }}</td>
-            <td>{{ task.created_by }}</td>
+            <td>
+              <a href="{% url 'home:user_detail' pk=task.created_by.id %}" class="text-decoration-none text-dark">
+                <div class="d-flex align-items-center border rounded p-2 h-100" style="gap: 8px;">
+                  {% if task.created_by.avatar %}
+                    <img src="{{ task.created_by.avatar.url }}" alt="Avatar"
+                         class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                  {% else %}
+                    <span style="font-size: 24px;">👤</span>
+                  {% endif %}
+                  <div>
+                    <div class="fw-bold small mb-0">
+                      {{ task.created_by.first_name }} {{ task.created_by.last_name }}
+                    </div>
+                    <div class="text-muted small">
+                      {% if task.created_by.position.rank == "Employee" %}
+                        {{ task.created_by.position.name }}
+                      {% else %}
+                        {{ task.created_by.position.rank }} {{ task.created_by.position.name }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </td>
             <td>
               {% for assignee in task.assignees.all %}
-                {{ assignee.first_name }} {{ assignee.last_name }}{% if not forloop.last %}, {% endif %}
+                <a href="{% url 'home:user_detail' pk=assignee.id %}" class="text-decoration-none text-dark">
+                <div class="d-flex align-items-center border rounded p-2 h-100" style="gap: 8px;">
+                  {% if assignee.avatar %}
+                    <img src="{{ assignee.avatar.url }}" alt="Avatar"
+                         class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover;">
+                  {% else %}
+                    <span style="font-size: 24px;">👤</span>
+                  {% endif %}
+                  <div>
+                    <div class="fw-bold small mb-0">
+                      {{ assignee.first_name }} {{ assignee.last_name }}
+                    </div>
+                    <div class="text-muted small">
+                      {% if assignee.position.rank == "Employee" %}
+                        {{ assignee.position.name }}
+                      {% else %}
+                        {{ assignee.position.rank }} {{ assignee.position.name }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </a>
               {% empty %}
                 <i>No assignees</i>
               {% endfor %}
