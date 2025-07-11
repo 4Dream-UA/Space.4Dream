@@ -33,7 +33,7 @@
             <a href="#">DocHub</a>
           </li>
           <li class="list-group-item">
-            <a href="#">Tasks</a>
+            <a href="{% url 'teamspace:task_project' pk=project.id %}">Tasks</a>
           </li>
           <li class="list-group-item">
             <a href="{% url 'teamspace:member_project' pk=project.id %}">Members</a>
