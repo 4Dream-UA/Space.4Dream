@@ -101,6 +101,57 @@ class CreateProjectView(LoginRequiredMixin, CreateView):
         return False
 
 
+class ListProjectView(LoginRequiredMixin, ListView):
+    model = Project
+    template_name = "teamspace/projects_list.html"
+    context_object_name = "projects"
+    form_class = SearchForm
+
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
+
+        context = super().get_context_data(**kwargs)
+
+        title = self.request.GET.get("title", "")
+
+        context["search_form"] = SearchForm(initial={"title": title})
+        return context
+
+    def get_queryset(self) -> QuerySet:
+        queryset = Project.objects.prefetch_related("teams")
+        title = self.request.GET.get("title")
+
+        if title:
+            return queryset.filter(name__icontains=title)
+
+
+        return queryset
+
+
+class UpdateProjectView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Project
+    template_name = "teamspace/update_project.html"
+    context_object_name = "project"
+    fields = ["name", "description", "teams"]
+    success_url = reverse_lazy("teamspace:project_list")
+
+    def test_func(self) -> bool:
+        if self.request.user.position.name in invite_able_returning():
+            return True
+        return False
+
+
+class DeleteProjectView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Project
+    template_name = "teamspace/delete_project.html"
+    context_object_name = "project"
+    success_url = reverse_lazy("teamspace:project_list")
+
+    def test_func(self) -> bool:
+        if self.request.user.position.name in invite_able_returning():
+            return True
+        return False
+
+
 class ListTeamView(LoginRequiredMixin, ListView):
     model = Team
     context_object_name = "teams"
