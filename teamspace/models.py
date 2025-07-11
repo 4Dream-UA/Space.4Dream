@@ -63,7 +63,15 @@ class Task(models.Model):
         default=Status.TODO,
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
-    assignees = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="assigned_tasks")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        default=None,
+        related_name="created_tasks",
+    )
+    project = models.ForeignKey("Project", on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     def __str__(self):
         return f"({self.task_type.name}) {self.name}"
