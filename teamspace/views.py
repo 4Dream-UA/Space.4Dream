@@ -196,6 +196,33 @@ class UpdateTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        task = self.get_object()
+        project = task.project
+        teams = project.teams.all()
+        members = Worker.objects.filter(team__in=teams).distinct()
+        form.fields["assignees"].queryset = members
+        form.fields["created_by"].queryset = members
+        return form
+
+
+class DeleteTaskView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Task
+    context_object_name = "task"
+    template_name = "teamspace/projects/tasks/delete_task.html"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "teamspace:task_project",
+            kwargs={"pk": Task.objects.get(pk=self.kwargs["pk"]).project.id}
+        )
+
+    def test_func(self) -> bool:
+        if self.request.user.position.name in invite_able_returning():
+            return True
+        return False
+
 
 class CreateTaskView(LoginRequiredMixin, CreateView):
     model = Task
