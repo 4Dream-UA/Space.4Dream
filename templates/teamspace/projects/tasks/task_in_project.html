@@ -24,6 +24,9 @@
           <th>Task</th>
           <th>Owner</th>
           <th>Assignees</th>
+          {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+            <th>Action</th>
+          {% endif %}
           <th>Description</th>
           <th>Deadline</th>
           <th>Completed</th>
@@ -88,18 +91,29 @@
                 <i>No assignees</i>
               {% endfor %}
             </td>
+              {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+                <td>
+                  <a class="btn btn-primary" href="{% url 'teamspace:update_task' pk=task.id %}">
+                    E
+                  </a>
+                  <br>
+                  <a class="btn btn-delete" href="#">
+                    D
+                  </a>
+                </td>
+              {% endif %}
             <td>{{ task.description }}</td>
             <td>{{ task.deadline|date:"Y-m-d H:i" }}</td>
             <td>
               {{ task.is_completed|yesno:"✅,❌" }}
               {% if user == task.created_by and task.is_completed == False %}
-                | <a class="btn btn-primary" href="{% url 'teamspace:complete_task' pk=task.id %}">E</a>
+                <br> <a class="btn btn-primary" href="{% url 'teamspace:complete_task' pk=task.id %}">E</a>
               {% endif %}
             </td>
             <td>
               {{ task.get_priority_display }}
               {% if user in task.assignees.all %}
-                | <a class="btn btn-primary" href="{% url 'teamspace:status_task' pk=task.id %}">E</a>
+                <br> <a class="btn btn-primary" href="{% url 'teamspace:status_task' pk=task.id %}">E</a>
               {% endif %}
             </td>
             <td>{{ task.task_type.name }}</td>
