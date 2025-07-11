@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from .models import Project, Team, Worker, Task
 from .forms import SearchForm
 from config.public_config import invite_able_returning
-
+from django.shortcuts import get_object_or_404
 
 ###############################################################
 # MEMBER VIEW
@@ -176,6 +176,31 @@ class TaskProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         project = self.get_object()
         return project.teams.filter(id__in=self.request.user.team_set.values("id")).exists()
+
+
+class CreateTaskView(LoginRequiredMixin, CreateView):
+    model = Task
+    template_name = "teamspace/projects/create_task.html"
+    fields = [
+        "name", "description", "deadline",
+        "task_type", "assignees",
+    ]
+    success_url = reverse_lazy("home:index")
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.project = get_object_or_404(Project, pk=self.kwargs["pk"])
+        form.instance.is_completed = False
+        form.instance.priority = "todo"
+        return super().form_valid(form)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        project = get_object_or_404(Project, pk=self.kwargs["pk"])
+        teams = project.teams.all()
+        members = Worker.objects.filter(team__in=teams).distinct()
+        form.fields["assignees"].queryset = members
+        return form
 
 
 ###############################################################
