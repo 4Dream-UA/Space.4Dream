@@ -96,7 +96,12 @@
                 | <a class="btn btn-primary" href="{% url 'teamspace:complete_task' pk=task.id %}">E</a>
               {% endif %}
             </td>
-            <td>{{ task.get_priority_display }}</td>
+            <td>
+              {{ task.get_priority_display }}
+              {% if user in task.assignees.all %}
+                | <a class="btn btn-primary" href="{% url 'teamspace:status_task' pk=task.id %}">E</a>
+              {% endif %}
+            </td>
             <td>{{ task.task_type.name }}</td>
           </tr>
         {% endfor %}
