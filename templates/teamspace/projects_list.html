@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <br>
+  <h1>My Projects</h1>
+
+  {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
+    <a class="btn btn-secondary" href="{% url 'teamspace:create_project' %}">Create Project</a>
+  {% endif %}
+
+  <br><br>
+
+  {% include 'includes/search.html' %}
+  <br>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped table-sm">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Project Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Teams Involved</th>
+          <th scope="col">Documents</th>
+          {% if user.position.name == "Project Manager" or user.position.name == "CTO" %}
+            <th scope="col">Actions</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ project.name }}</td>
+            <td>{{ project.description|truncatewords:15 }}</td>
+            <td>
+              {% for team in project.teams.all %}
+                <span class="badge bg-primary">{{ team.name }}</span>{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </td>
+            <td>
+              {% if project.doc_hub %}
+                <a href="{{ project.doc_hub.document.url }}" class="btn btn-sm btn-outline-info" target="_blank">Open</a>
+              {% else %}
+                <span class="text-muted">No document</span>
+              {% endif %}
+            </td>
+            {% if user.position.name == "Project Manager" or user.position.name == "CTO" %}
+              <td>
+                <a href="{% url 'teamspace:update_project' pk=project.id %}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="{% url 'teamspace:delete_project' pk=project.id %}" class="btn btn-sm btn-danger">Delete</a>
+              </td>
+            {% endif %}
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center">No projects found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
