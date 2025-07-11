@@ -164,6 +164,7 @@ class TaskProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Project
     context_object_name = "project"
     template_name = "teamspace/projects/task_in_project.html"
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -185,7 +186,6 @@ class CreateTaskView(LoginRequiredMixin, CreateView):
         "name", "description", "deadline",
         "task_type", "assignees",
     ]
-    success_url = reverse_lazy("home:index")
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -201,6 +201,35 @@ class CreateTaskView(LoginRequiredMixin, CreateView):
         members = Worker.objects.filter(team__in=teams).distinct()
         form.fields["assignees"].queryset = members
         return form
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "teamspace:task_project",
+            kwargs={"pk": Task.objects.get(pk=self.kwargs["pk"]).project.id}
+        )
+
+
+class CompleteTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Task
+    context_object_name = "task"
+    template_name = "teamspace/projects/complete_task.html"
+    fields = ["is_completed"]
+
+    def form_valid(self, form):
+        form.instance.is_completed = True
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "teamspace:task_project",
+            kwargs={"pk": Task.objects.get(pk=self.kwargs["pk"]).project.id}
+        )
+
+
+    def test_func(self):
+        if self.request.user == Task.objects.get(pk=self.kwargs["pk"]).created_by:
+            return True
+        return False
 
 
 ###############################################################
