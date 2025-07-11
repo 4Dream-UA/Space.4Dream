@@ -1,3 +1,5 @@
+{% load custom_filters %}
+
 <ul>
 <br>
   <li class="list-group-item">
@@ -20,30 +22,30 @@
       <a style="float: right" href="{% url 'teamspace:create_project' %}">+</a>
     {% endif %}
 
-    <li class="list-group-item"><a href="{% url 'teamspace:project_list' %}">Projects</a>:</li>
+<li class="list-group-item"><a href="{% url 'teamspace:project_list' %}">Projects</a>:</li>
 
-    {% for team in user.team_set.all %}
-      {% for project in team.project_set.all %}
-      <li class="list-group-item">
-        <div onclick="toggleSublist(this)">
-          ▼ {{ project.name }}
-        </div>
-        <ul class="sublist hidden">
-          <li class="list-group-item">
-            <a href="#">DocHub</a>
-          </li>
-          <li class="list-group-item">
-            <a href="{% url 'teamspace:task_project' pk=project.id %}">Tasks</a>
-          </li>
-          <li class="list-group-item">
-            <a href="{% url 'teamspace:member_project' pk=project.id %}">Members</a>
-          </li>
-        </ul>
-      </li>
-      {% endfor %}
-      {% empty %}
-      <i>Nothing...</i>
-    {% endfor %}
+{% with user.team_set.all|unique_projects as unique_projects %}
+  {% for project in unique_projects %}
+    <li class="list-group-item">
+      <div onclick="toggleSublist(this)">
+        ▼ {{ project.name }}
+      </div>
+      <ul class="sublist hidden">
+        <li class="list-group-item">
+          <a href="#">DocHub</a>
+        </li>
+        <li class="list-group-item">
+          <a href="{% url 'teamspace:task_project' pk=project.id %}">Tasks</a>
+        </li>
+        <li class="list-group-item">
+          <a href="{% url 'teamspace:member_project' pk=project.id %}">Members</a>
+        </li>
+      </ul>
+    </li>
+  {% empty %}
+    <i>Nothing...</i>
+  {% endfor %}
+{% endwith %}
 
     <li class="list-group-item" onclick="toggleSublist(this)">▼ Members:</li>
 
