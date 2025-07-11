@@ -20,7 +20,7 @@
       <a style="float: right" href="{% url 'teamspace:create_project' %}">+</a>
     {% endif %}
 
-    <li class="list-group-item">Projects:</li>
+    <li class="list-group-item"><a href="{% url 'teamspace:project_list' %}">Projects</a>:</li>
 
     {% for team in user.team_set.all %}
       {% for project in team.project_set.all %}
