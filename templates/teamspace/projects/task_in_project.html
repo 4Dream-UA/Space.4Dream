@@ -90,7 +90,12 @@
             </td>
             <td>{{ task.description }}</td>
             <td>{{ task.deadline|date:"Y-m-d H:i" }}</td>
-            <td>{{ task.is_completed|yesno:"✅,❌" }}</td>
+            <td>
+              {{ task.is_completed|yesno:"✅,❌" }}
+              {% if user == task.created_by and task.is_completed == False %}
+                | <a class="btn btn-primary" href="{% url 'teamspace:complete_task' pk=task.id %}">E</a>
+              {% endif %}
+            </td>
             <td>{{ task.get_priority_display }}</td>
             <td>{{ task.task_type.name }}</td>
           </tr>
