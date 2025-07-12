@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import QuerySet
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView, TemplateView
 from django.urls import reverse_lazy
 
-from .models import Project, Team, Worker, Task
+from .models import Project, Team, Worker, Task, Document
 from .forms import SearchForm
 from config.public_config import invite_able_returning
 from django.shortcuts import get_object_or_404
@@ -248,10 +248,7 @@ class CreateTaskView(LoginRequiredMixin, CreateView):
         return form
 
     def get_success_url(self):
-        return reverse_lazy(
-            "teamspace:task_project",
-            kwargs={"pk": Task.objects.get(pk=self.kwargs["pk"]).project.id}
-        )
+        return reverse_lazy("teamspace:task_project", kwargs={"pk": self.object.project.id})
 
 
 class CompleteTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -290,6 +287,73 @@ class UpdateTaskStatusView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         if self.request.user in Task.objects.get(pk=self.kwargs["pk"]).assignees.all():
+            return True
+        return False
+
+# ---> DocHub-Project Views
+class DocHubView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Project
+    template_name = "teamspace/projects/dochub/documents_in_project.html"
+    paginate_by = 7
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = self.get_object()
+        context["documents"] = project.documents.all()
+        return context
+
+    def test_func(self):
+        project = self.get_object()
+        return project.teams.filter(id__in=self.request.user.team_set.values("id")).exists()
+
+
+class AddDocHubView(LoginRequiredMixin, CreateView):
+    model = Document
+    template_name = "teamspace/projects/dochub/load_document.html"
+    fields = ["name", "description", "document"]
+
+    def form_valid(self, form):
+        form.instance.worker = self.request.user
+        form.instance.project = get_object_or_404(Project, pk=self.kwargs["pk"])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("teamspace:dochub", kwargs={"pk": self.object.project.id})
+
+
+class UpdateDocHubView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Document
+    context_object_name = "document"
+    template_name = "teamspace/projects/dochub/load_document.html"
+    fields = ["name", "description", "document"]
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "teamspace:dochub",
+            kwargs={"pk": Document.objects.get(pk=self.kwargs["pk"]).project.id}
+        )
+
+    def test_func(self) -> bool:
+        if (self.request.user.position.name in invite_able_returning()
+            or self.request.user == Document.objects.get(pk=self.kwargs["pk"]).worker):
+            return True
+        return False
+
+
+class DeleteDocHubView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Document
+    context_object_name = "document"
+    template_name = "teamspace/projects/dochub/delete_document.html"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "teamspace:dochub",
+            kwargs={"pk": Document.objects.get(pk=self.kwargs["pk"]).project.id}
+        )
+
+    def test_func(self) -> bool:
+        if (self.request.user.position.name in invite_able_returning()
+            or self.request.user == Document.objects.get(pk=self.kwargs["pk"]).worker):
             return True
         return False
 
