@@ -89,19 +89,22 @@ class Team(models.Model):
         return self.name
 
 
+class Project(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    teams = models.ManyToManyField(Team)
+
+    def __str__(self):
+        return self.name
+
+
 class Document(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     document = models.FileField(upload_to="documents/")
     worker = models.ForeignKey(Worker, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True, related_name="documents")
     date = models.DateTimeField(auto_now_add=True)
 
-
-class Project(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    teams = models.ManyToManyField(Team)
-    doc_hub = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True)
-
-    def __str__(self):
-        return self.name
+    class Meta:
+        ordering = ["date"]
