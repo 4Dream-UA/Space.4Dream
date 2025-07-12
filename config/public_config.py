@@ -27,7 +27,7 @@ TASK_TYPE_VALUE = [
 USERS = {
     "superuser":
         {
-            """ Advice: this one ONLY for admin panel working! """
+            """ Advice: Do this one ONLY for admin panel working! """
             "username": "pm_fletcher",
             "password": "PositionPM",
         },
