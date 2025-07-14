@@ -5,15 +5,14 @@ from django.views import View
 from django.views.generic import UpdateView, CreateView, ListView, DetailView
 from django.urls import reverse_lazy
 
-from config.public_config import invite_able_returning
 from .forms import RegisterInviteForm
 
 
-class HomePageView(View):
+class HomePageView(ListView):
+    model = get_user_model()
+    context_object_name = "users"
     template_name = "home/index.html"
 
-    def get(self, request):
-        return render(request, self.template_name)
 
 
 class CreateInviteView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -23,14 +22,13 @@ class CreateInviteView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     success_url = reverse_lazy("home:index")
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
 class UpdateSettingsView(LoginRequiredMixin, UpdateView):
     model = get_user_model()
     fields = [
-        "username", "email",
         "first_name", "last_name",
         "avatar"
               ]
