@@ -5,7 +5,6 @@ from django.urls import reverse_lazy
 
 from .models import Project, Team, Worker, Task, Document
 from .forms import SearchForm
-from config.public_config import invite_able_returning
 from django.shortcuts import get_object_or_404
 
 ###############################################################
@@ -52,7 +51,7 @@ class EditMembersView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy("teamspace:all_members")
 
     def test_func(self) -> bool:
-        if (self.request.user.position.name in invite_able_returning()
+        if (self.request.user.is_staff
                 and self.request.user.position_priority < self.get_object().position_priority):
             return True
         return False
@@ -65,7 +64,7 @@ class DeleteMembersView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy("teamspace:all_members")
 
     def test_func(self) -> bool:
-        if (self.request.user.position.name in invite_able_returning()
+        if (self.request.user.is_staff
                 and self.request.user.position_priority < self.get_object().position_priority):
             return True
         return False
@@ -83,7 +82,7 @@ class CreateProjectView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("teamspace:all_members")
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
@@ -122,7 +121,7 @@ class UpdateProjectView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy("teamspace:project_list")
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
@@ -134,7 +133,7 @@ class DeleteProjectView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy("teamspace:project_list")
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
@@ -164,7 +163,6 @@ class TaskProjectView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Project
     context_object_name = "project"
     template_name = "teamspace/projects/tasks/task_in_project.html"
-    paginate_by = 4
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -192,7 +190,7 @@ class UpdateTaskView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         )
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
@@ -219,7 +217,7 @@ class DeleteTaskView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         )
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
@@ -294,7 +292,6 @@ class UpdateTaskStatusView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class DocHubView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Project
     template_name = "teamspace/projects/dochub/documents_in_project.html"
-    paginate_by = 7
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -324,7 +321,7 @@ class AddDocHubView(LoginRequiredMixin, CreateView):
 class UpdateDocHubView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Document
     context_object_name = "document"
-    template_name = "teamspace/projects/dochub/load_document.html"
+    template_name = "teamspace/projects/dochub/update_document.html"
     fields = ["name", "description", "document"]
 
     def get_success_url(self):
@@ -334,7 +331,7 @@ class UpdateDocHubView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         )
 
     def test_func(self) -> bool:
-        if (self.request.user.position.name in invite_able_returning()
+        if (self.request.user.is_staff
             or self.request.user == Document.objects.get(pk=self.kwargs["pk"]).worker):
             return True
         return False
@@ -352,7 +349,7 @@ class DeleteDocHubView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         )
 
     def test_func(self) -> bool:
-        if (self.request.user.position.name in invite_able_returning()
+        if (self.request.user.is_staff
             or self.request.user == Document.objects.get(pk=self.kwargs["pk"]).worker):
             return True
         return False
@@ -396,7 +393,7 @@ class CreateTeamView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
@@ -409,7 +406,7 @@ class EditTeamView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
 
@@ -422,6 +419,6 @@ class DeleteTeamView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy("teamspace:teams_list")
 
     def test_func(self) -> bool:
-        if self.request.user.position.name in invite_able_returning():
+        if self.request.user.is_staff:
             return True
         return False
