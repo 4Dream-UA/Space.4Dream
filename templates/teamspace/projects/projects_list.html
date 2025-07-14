@@ -55,7 +55,7 @@
             {% if user.is_staff %}
               <td class="px-6 py-4 space-x-2">
                 <a href="{% url 'teamspace:update_project' pk=project.id %}"
-                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-white dark:bg-blue-600 rounded hover:dark:bg-blue-600">
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">
                   Edit
                 </a>
                 <a href="{% url 'teamspace:delete_project' pk=project.id %}"
