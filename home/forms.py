@@ -9,7 +9,7 @@ class RegisterInviteForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = User
-        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email", "position", "avatar")
+        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "email", "position", "avatar", "is_staff")
         widgets = {
             'avatar': forms.ClearableFileInput(attrs={'multiple': False}),
         }
