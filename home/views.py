@@ -14,7 +14,6 @@ class HomePageView(ListView):
     template_name = "home/index.html"
 
 
-
 class CreateInviteView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = get_user_model()
     form_class = RegisterInviteForm
@@ -26,6 +25,7 @@ class CreateInviteView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
             return True
         return False
 
+
 class UpdateSettingsView(LoginRequiredMixin, UpdateView):
     model = get_user_model()
     fields = [
@@ -34,6 +34,7 @@ class UpdateSettingsView(LoginRequiredMixin, UpdateView):
               ]
     template_name = "home/settings.html"
     success_url = reverse_lazy("home:index")
+
 
 class ProfileView(LoginRequiredMixin, ListView):
     model = get_user_model()
