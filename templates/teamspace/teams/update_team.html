@@ -13,7 +13,7 @@
     {% csrf_token %}
 
     {% for field in form %}
-      {% if field.name == 'teams' %}
+      {% if field.name == 'workers' %}
         <div>
           <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
             {{ field.label }}
