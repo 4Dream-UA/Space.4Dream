@@ -74,7 +74,7 @@ class Task(models.Model):
     project = models.ForeignKey("Project", on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     class Meta:
-        ordering = ["is_completed", "priority"]
+        ordering = ["is_completed"]
 
     def __str__(self):
         return f"({self.task_type.name}) {self.name}"
