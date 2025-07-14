@@ -1,21 +1,32 @@
 {% if is_paginated %}
   {% load querystring_tags %}
 
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li class="page-item">
-        <a href="?{% querystring_except_page %}&page={{ page_obj.previous_page_number }}" class="page-link">prev</a>
-      </li>
-    {% endif %}
+  <nav class="flex justify-center mt-4" aria-label="Page navigation">
+    <ul class="inline-flex -space-x-px text-sm">
+      {% if page_obj.has_previous %}
+        <li>
+          <a href="?{% querystring_except_page %}&page={{ page_obj.previous_page_number }}"
+             class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            Prev
+          </a>
+        </li>
+      {% endif %}
 
-    <li class="page-item active">
-      <span class="page-link">{{ page_obj.number }} of {{ paginator.num_pages }}</span>
-    </li>
-
-    {% if page_obj.has_next %}
-      <li class="page-item">
-        <a href="?{% querystring_except_page %}&page={{ page_obj.next_page_number }}" class="page-link">next</a>
+      <li>
+        <span
+          class="px-4 py-2 leading-tight text-white bg-blue-600 border border-gray-300 dark:border-gray-700 rounded-md">
+          Page {{ page_obj.number }} of {{ paginator.num_pages }}
+        </span>
       </li>
-    {% endif %}
-  </ul>
+
+      {% if page_obj.has_next %}
+        <li>
+          <a href="?{% querystring_except_page %}&page={{ page_obj.next_page_number }}"
+             class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            Next
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
 {% endif %}

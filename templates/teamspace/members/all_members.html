@@ -1,78 +1,85 @@
-{% extends 'base.html' %}
-
+{% extends 'layouts/base.html' %}
 
 {% block content %}
-  <br>
-  <h1>All Members</h1>
-  {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
-    <a class="btn btn-secondary" href="{% url 'teamspace:create_team' %}">Create Team</a>
-    <a class="btn btn-secondary" href="{% url 'home:invite' %}">Invite</a>
-  {% endif %}
+  <div class="p-4 ml-64">
+    <div class="flex justify-between items-center mb-4">
+<h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">All Members</h1>
 
-  <br><br>
+{% if user.is_staff %}
+  <div class="flex flex-wrap gap-2 mb-4">
+    <a href="{% url 'teamspace:create_team' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded bg-blue-700 hover:bg-blue-800 hover:text-white">
+      Create Team
+    </a>
+    <a href="{% url 'home:invite' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded bg-blue-700 hover:bg-blue-800 hover:text-white">
+      Invite
+    </a>
+  </div>
+{% endif %}
 
-  {% include 'includes/search.html' %}
-  <br>
+    </div>
 
-<div class="table-responsive">
-    <table class="table table-bordered table-hover table-striped table-sm">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
-                  <th scope="col">Action</th>
-                {% endif %}
-                <th scope="col">Role</th>
-                <th scope="col">Joined</th>
-                <th scope="col">Last Login</th>
-            </tr>
+    {% include 'includes/search.html' %}
+
+    <div class="overflow-x-auto mt-4 rounded-lg shadow">
+      <table class="min-w-full text-sm text-left text-gray-700 bg-white dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+          <tr>
+            <th class="px-4 py-3">#</th>
+            <th class="px-4 py-3">Name</th>
+            {% if user.is_staff %}
+              <th class="px-4 py-3">Action</th>
+            {% endif %}
+            <th class="px-4 py-3">Role</th>
+            <th class="px-4 py-3">Joined</th>
+            <th class="px-4 py-3">Last Login</th>
+          </tr>
         </thead>
         <tbody>
           {% for member in all_members %}
-            <tr>
-              <th scope="row">{{ forloop.counter }}</th>
-            <td>
-            <a href="{% url 'home:user_detail' pk=member.id %}">
-              <div class="d-flex align-items-center">
-                {% if member.avatar %}
-                  <img src="{{ member.avatar.url }}" alt="Avatar"
-                       class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                {% else %}
-                  <span class="me-2" style="width: 40px; height: 40px; font-size: 28px;">👤</span>
-                {% endif %}
-                <span>&nbsp&nbsp{{ member.first_name }} {{ member.last_name }}</span>
-              </div>
-              {% if user.position.name == "Project Manager" or user.position.name == "CTO" or user.position.name == "HR Manager" %}
-                {% if user.position_priority < member.position_priority %}
-                  <th scope="col">
-                    <a class="btn btn-primary" href="{% url 'teamspace:edit_member' pk=member.id %}">
-                      E
-                    </a> |
-                    <a class="btn btn-danger" href="{% url 'teamspace:delete_member' pk=member.id %}">
-                      D
-                    </a>
-                  </th>
-                {% else %}
-                  <th>
-                    <p>Unable</p>
-                  </th>
-                {% endif %}
+            <tr class="border-t border-gray-200 dark:border-gray-700">
+              <td class="px-4 py-2">{{ forloop.counter }}</td>
+              <td class="px-4 py-2">
+                <a href="{% url 'home:user_detail' pk=member.id %}" class="flex items-center gap-2">
+                  {% if member.avatar %}
+                    <img src="{{ member.avatar.url }}" alt="Avatar"
+                         class="w-10 h-10 rounded-full object-cover">
+                  {% else %}
+                    <span style="font-size: 1.8rem;">👤</span>
+                  {% endif %}
+                  <span>{{ member.first_name }} {{ member.last_name }}</span>
+                </a>
+              </td>
+              {% if user.is_staff %}
+                <td class="px-4 py-2">
+                  {% if user.position_priority < member.position_priority %}
+                    <div class="flex gap-2">
+                      <a href="{% url 'teamspace:edit_member' pk=member.id %}" class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">
+                      Edit
+                      </a>
+                      <a href="{% url 'teamspace:delete_member' pk=member.id %}" class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 ml-1">
+  Delete
+</a>
+                    </div>
+                  {% else %}
+                    <p class="text-sm text-gray-400">Unable</p>
+                  {% endif %}
+                </td>
               {% endif %}
-            </a>
-            </td>
-              {% if member.position.rank != "Employee" %}
-                <td>{{ member.position.rank }} {{ member.position.name }}</td>
-              {% else %}
-                <td>{{ member.position.name }}</td>
-              {% endif %}
-              <td>{{ member.date_joined }}</td>
-              <td>{{ member.last_login }}</td>
-
+              <td class="px-4 py-2">
+                {% if member.position.rank != "Employee" %}
+                  {{ member.position.rank }} {{ member.position.name }}
+                {% else %}
+                  {{ member.position.name }}
+                {% endif %}
+              </td>
+              <td class="px-4 py-2">{{ member.date_joined }}</td>
+              <td class="px-4 py-2">{{ member.last_login }}</td>
             </tr>
           {% endfor %}
         </tbody>
-    </table>
-</div>
+      </table>
+    </div>
 
+    {% include 'includes/pagination.html' %}
+  </div>
 {% endblock %}
