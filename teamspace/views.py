@@ -46,7 +46,7 @@ class EditMembersView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         "username", "email",
         "first_name", "last_name",
         "avatar", "position_priority",
-        "position",
+        "position", "is_staff"
     ]
     success_url = reverse_lazy("teamspace:all_members")
 
@@ -79,7 +79,7 @@ class CreateProjectView(LoginRequiredMixin, CreateView):
     model = Project
     template_name = "teamspace/projects/create_project.html"
     fields = ["name", "description", "teams"]
-    success_url = reverse_lazy("teamspace:all_members")
+    success_url = reverse_lazy("teamspace:project_list")
 
     def test_func(self) -> bool:
         if self.request.user.is_staff:
