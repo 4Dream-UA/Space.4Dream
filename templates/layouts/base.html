@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  {% include "includes/head.html" %}
+  {% block extrastyle %}{% endblock extrastyle %}
+  <style>
+    .main-content-container {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 4rem);
+    }
+    .content-wrapper {
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-800">
+
+  {% block messages %}{% endblock messages %}
+
+
+  {% block navigation %}
+    {% include "includes/navigation.html" %}
+  {% endblock navigation %}
+
+  <div class="flex pt-16 h-[calc(100vh-4rem)]">
+
+    {% block sidebar %}
+      {% include "includes/sidebar.html" %}
+    {% endblock sidebar %}
+
+    <div class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90" id="sidebarBackdrop"></div>
+
+
+    <div id="main-content" class="main-content-container w-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+      <div class="content-wrapper">
+        {% block content %}{% endblock content %}
+      </div>
+
+
+      {% block footer %}
+        {% include "includes/footer.html" %}
+      {% endblock footer %}
+
+      <p class="my-10 text-sm text-center text-gray-500">
+        &copy; Space 4Dream
+      </p>
+    </div>
+  </div>
+
+  {% include "includes/scripts.html" %}
+  {% block extra_js %}{% endblock extra_js %}
+
+</body>
+
+</html>

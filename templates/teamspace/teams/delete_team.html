@@ -1,0 +1,24 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <a href="/" class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
+      <img src="https://flowbite-admin-dashboard.vercel.app/images/logo.svg" class="mr-4 h-11" alt="FlowBite Logo">
+      <span>4Dream</span>
+    </a>
+
+
+  <form method="post" action="" class="space-y-6 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+  <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Delete?</h1>
+    <i class=" font-bold text-gray-900 dark:text-white mb-6">Be careful to delete this team!</i>
+    {% csrf_token %}
+
+    <br><br><br>
+    <button type="submit"
+      class="w-full sm:w-auto px-5 py-2 text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm bg-red-600">
+      Delete!
+    </button>
+  </form>
+</div>
+{% endblock %}

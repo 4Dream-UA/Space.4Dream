@@ -1,0 +1,113 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<main>
+  <div class="px-4 pt-6">
+    <div class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+      <!-- Main widget -->
+      <div
+        class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+<div class="w-full py-12 ">
+  <section class="px-6 mx-auto max-w-4xl text-center">
+    <h1 class="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-gray-900 dark:text-white">
+      Welcome to Space 4Dream!
+    </h1>
+
+    <p class="mb-8 text-lg text-gray-700 dark:text-gray-300">
+      <strong>Space 4Dream</strong> is a modern platform for team and project management, designed to simplify collaboration, boost productivity, and ensure transparency at every stage of development.
+    </p>
+
+    <h2 class="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-200">Everything you need — in one place:</h2>
+
+<ul class="space-y-10 text-center text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+  <li>
+    <p class="mt-2 font-semibold text-xl">Project & Team Management</p>
+    <p class="mt-2 text-base">Create workspaces, configure roles, monitor progress, and delegate tasks efficiently.</p>
+    <br>
+  </li>
+  <li>
+    <p class="mt-2 font-semibold text-xl">Flexible Task Tracker</p>
+    <p class="mt-2 text-base">Add tasks, manage statuses, set deadlines and priorities — stay in control of every process.</p>
+    <br>
+  </li>
+  <li>
+    <p class="mt-2 font-semibold text-xl">Centralized Document Storage</p>
+    <p class="mt-2 text-base">A secure hub for storing technical documentation, files, and any critical team materials.</p>
+  </li>
+</ul>
+
+
+    <p class="mt-10 text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+      <strong>Space 4Dream</strong> is perfect for both small startup teams and distributed enterprise projects — wherever transparency, availability, and reliability matter.
+    </p>
+  </section>
+</div>
+
+
+
+      </div>
+      <!--Tabs widget -->
+      <div
+        class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+
+
+        <ul
+          class="hidden text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex dark:divide-gray-600 dark:text-gray-400"
+          id="fullWidthTab" data-tabs-toggle="#fullWidthTabContent" role="tablist">
+          <li class="w-full">
+            <button id="about-tab" data-tabs-target="#about" type="button" role="tab" aria-controls="about"
+              aria-selected="false"
+              class="inline-block w-full p-4 rounded-tr-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">Top
+              Management</button>
+          </li>
+        </ul>
+        <div id="fullWidthTabContent" class="border-t border-gray-200 dark:border-gray-600">
+          <div class="hidden pt-4" id="about" role="tabpanel" aria-labelledby="about-tab">
+            <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+
+              {% for user in users %}
+                {% if user.is_staff and user.username != "a.admin" %}
+              <li class="py-3 sm:py-4">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    {% if user.avatar %}
+                    <img class="w-8 h-8 rounded-full"
+                      src="{{ user.avatar.url }}"
+                      alt="Avatar">
+                    {% else %}
+
+                        <span style="font-size: 2rem"; class="w-8 h-8 rounded-full">👤</span>
+
+                    {% endif %}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-gray-900 truncate dark:text-white">
+                      {{ user.first_name }} {{ user.last_name }}
+                    </p>
+                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                      {{ user.email }}
+                    </p>
+                  </div>
+                  <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                    {{ user.position.name }}
+                  </div>
+                </div>
+              </li>
+                {% endif %}
+              {% endfor %}
+
+            </ul>
+          </div>
+        </div>
+        <!-- Card Footer -->
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+{% endblock content %}

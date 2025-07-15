@@ -1,0 +1,77 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+  <br><br>
+  <div class="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">
+    <a href="/" class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
+      <img src="https://flowbite-admin-dashboard.vercel.app/images/logo.svg" class="mr-4 h-11" alt="FlowBite Logo">
+      <span>4Dream</span>
+    </a>
+
+    <!-- Card -->
+    <div class="w-full max-w-2xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+        ⚙Account Settings
+      </h2>
+
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        To change your password, go to
+        <a href="{% url 'password_change' %}" class="text-blue-600 hover:underline dark:text-blue-400">
+          password change page
+        </a>.
+      </p>
+
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+          <div class="flex items-center p-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            {{ error }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+{% for field in form %}
+  {% if field.name == "avatar" %}
+    <div>
+      <label for="{{ field.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        {{ field.label }}
+      </label>
+
+
+
+      <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}"
+             accept="image/*"
+             class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" />
+
+      {% if field.errors %}
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ field.errors|striptags }}</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <div>
+      <label for="{{ field.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        {{ field.label }}
+      </label>
+      {{ field }}
+      {% if field.errors %}
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ field.errors|striptags }}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endfor %}
+
+
+        <button type="submit"
+          class="w-full px-5 py-3 text-base font-medium text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+          Save changes
+        </button>
+      </form>
+    </div>
+  </div>
+  <br><br>
+{% endblock content %}

@@ -1,0 +1,77 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">All Projects</h1>
+
+    {% if user.is_staff %}
+      <a href="{% url 'teamspace:create_project' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+        Create Project
+      </a>
+    {% endif %}
+  </div>
+
+  {% include 'includes/search.html' %}
+
+  <div class="overflow-x-auto mt-6 rounded-lg shadow">
+    <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+          <th scope="col" class="px-6 py-3">#</th>
+          <th scope="col" class="px-6 py-3">Project Name</th>
+          <th scope="col" class="px-6 py-3">Description</th>
+          <th scope="col" class="px-6 py-3">Teams Involved</th>
+          <th scope="col" class="px-6 py-3">Documents</th>
+          {% if user.is_staff %}
+            <th scope="col" class="px-6 py-3">Actions</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for project in projects %}
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              {{ forloop.counter }}
+            </th>
+            <td class="px-6 py-4">{{ project.name }}</td>
+            <td class="px-6 py-4">{{ project.description|truncatewords:15 }}</td>
+            <td class="px-6 py-4">
+              {% for team in project.teams.all %}
+                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium mr-1 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                  <a href="{% url 'teamspace:teams_list' %}"> {{ team.name }} </a>
+                </span>
+              {% endfor %}
+            </td>
+            <td class="px-6 py-4">
+              {% if project.documents %}
+                <a href="{% url 'teamspace:dochub' pk=project.id %}" target="_blank"
+                  class="text-sm text-blue-600 hover:underline dark:text-blue-400">Open</a>
+              {% else %}
+                <span class="text-sm text-gray-400 italic">No document</span>
+              {% endif %}
+            </td>
+            {% if user.is_staff %}
+              <td class="px-6 py-4 space-x-2">
+                <a href="{% url 'teamspace:update_project' pk=project.id %}"
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">
+                  Edit
+                </a>
+                <a href="{% url 'teamspace:delete_project' pk=project.id %}"
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700">
+                  Delete
+                </a>
+              </td>
+            {% endif %}
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No projects found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <a href="/" class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
+    <img src="https://flowbite-admin-dashboard.vercel.app/images/logo.svg" class="mr-4 h-11" alt="FlowBite Logo">
+    <span>4Dream</span>
+  </a>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-6 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Upload File</h1>
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.help_text %}
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ field.help_text }}</p>
+        {% endif %}
+        {% if field.errors %}
+          <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ field.errors|striptags }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit"
+      class="w-full sm:w-auto px-5 py-2 text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+      Upload
+    </button>
+  </form>
+</div>
+{% endblock %}

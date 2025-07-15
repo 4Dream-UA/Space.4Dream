@@ -1,0 +1,115 @@
+{% load static %}
+{% load custom_filters %}
+
+<aside id="sidebar"
+    class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
+    aria-label="Sidebar">
+    <div class="relative flex flex-col flex-1 min-h-0 pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
+            <div class="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+
+                <ul class="pb-2 space-y-2">
+                    <!-- Home -->
+                    <li>
+                        <a href="{% url 'home:index' %}"
+                            class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+                            <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                            </svg>
+                            <span class="ml-3" sidebar-toggle-item>Home</span>
+                        </a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+
+                        <!-- Settings -->
+                        <li>
+                            <a href="{% url 'home:settings' pk=user.id %}"
+                               class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                                <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 108 8 8.009 8.009 0 00-8-8zm1 11H9v-2h2zm0-4H9V7h2z"/></svg>
+                                <span class="ml-3">Settings</span>
+                            </a>
+                        </li>
+
+                        <!-- Invite -->
+                        {% if user.is_staff %}
+                            <li>
+                                <a href="{% url 'home:invite' %}"
+                                   class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                                    <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M8 9a3 3 0 116 0 3 3 0 01-6 0z"/><path fill-rule="evenodd" d="M2 15a6 6 0 0112 0v1H2v-1z" clip-rule="evenodd"/></svg>
+                                    <span class="ml-3">Invite</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <!-- Projects List -->
+                        <li class="pt-2 text-sm font-semibold text-gray-700 uppercase dark:text-gray-400">My Projects</li>
+
+                        <li>
+                            <a href="{% url 'teamspace:project_list' %}"
+                               class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                                <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3h12v2H4V3zm0 4h12v2H4V7zm0 4h8v2H4v-2z"/></svg>
+                                <span class="ml-3">All Projects</span>
+                            </a>
+                        </li>
+
+                        {% with user.team_set.all|unique_projects as unique_projects %}
+                          {% for project in unique_projects %}
+                            <li>
+                              <details class="px-2 py-1 rounded-lg bg-gray-50 dark:bg-gray-700">
+                                <summary class="cursor-pointer text-sm font-medium text-gray-800 dark:text-gray-200">{{ project.name }}</summary>
+                                <ul class="ml-4 mt-2 space-y-1">
+                                  <li><a href="{% url 'teamspace:dochub' pk=project.id %}" class="text-sm text-gray-700 dark:text-gray-300 hover:underline">DocHub</a></li>
+                                  <li><a href="{% url 'teamspace:task_project' pk=project.id %}" class="text-sm text-gray-700 dark:text-gray-300 hover:underline">Tasks</a></li>
+                                  <li><a href="{% url 'teamspace:member_project' pk=project.id %}" class="text-sm text-gray-700 dark:text-gray-300 hover:underline">Members</a></li>
+                                </ul>
+                              </details>
+                            </li>
+                          {% empty %}
+                            <li class="text-sm text-gray-400">No projects...</li>
+                          {% endfor %}
+                        {% endwith %}
+
+                        <!-- Members section -->
+                        <li class="pt-4 text-sm font-semibold text-gray-700 uppercase dark:text-gray-400">Members</li>
+                        <li>
+                            <a href="{% url 'teamspace:all_members' %}"
+                               class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                                <span class="ml-3">All Members</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'teamspace:teams_list' %}"
+                               class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                                 <span class="ml-3">Teams</span>
+                            </a>
+                        </li>
+
+                        <!-- Logout -->
+                        <li class="pt-4">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="pt-4">
+                            <form action="{% url 'login' %}" method="get">
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                                    Login
+                                </button>
+                            </form>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</aside>

@@ -1,0 +1,133 @@
+{% extends "layouts/base.html" %}
+{% load querystring_tags %}
+
+{% block content %}
+<div class="p-6">
+  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">{{ project.name }} Tasks</h2>
+  <p class="text-gray-600 dark:text-gray-300 mb-6">{{ project.description }}</p>
+
+
+  <a href="{% url 'teamspace:create_task' pk=project.id %}" class="inline-block px-4 py-2 mb-6 text-white bg-blue-600 rounded bg-blue-700 hover:bg-blue-800 hover:text-white">
+    Add Task
+  </a>
+
+  {% if project.task_set.all %}
+    <div class="overflow-x-auto rounded shadow">
+      <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+  <thead class="bg-gray-100 dark:bg-gray-700 text-xs uppercase text-gray-600 dark:text-gray-300">
+    <tr>
+      <th scope="col" class="px-4 py-3">#</th>
+      <th scope="col" class="px-4 py-3">Task</th>
+      <th scope="col" class="px-4 py-3">Owner</th>
+      <th scope="col" class="px-4 py-3">Assignees</th>
+      {% if user.is_staff %}
+        <th scope="col" class="px-4 py-3">Actions</th>
+      {% endif %}
+      <th scope="col" class="px-4 py-3">Description</th>
+      <th scope="col" class="px-4 py-3">Deadline</th>
+      <th scope="col" class="px-4 py-3">Completed</th>
+      <th scope="col" class="px-4 py-3">Status</th>
+      <th scope="col" class="px-4 py-3">Type</th>
+    </tr>
+  </thead>
+  <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+    {% for task in project.task_set.all %}
+      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+        <td class="px-4 py-3 font-semibold text-gray-900 dark:text-white">{{ forloop.counter }}</td>
+        <td class="px-4 py-3 font-medium">{{ task.name }}</td>
+
+        <!-- OWNER -->
+        <td class="px-4 py-3">
+        <a href="{% url 'home:user_detail' pk=task.created_by.id %}">
+          <div class="flex items-center gap-2">
+            {% if task.created_by.avatar %}
+              <img src="{{ task.created_by.avatar.url }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover">
+            {% else %}
+              <div class="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-500 rounded-full">👤</div>
+            {% endif %}
+            <div class="leading-tight">
+              <div class="font-semibold">{{ task.created_by.get_full_name }}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">{{ task.created_by.position }}</div>
+            </div>
+          </div>
+        </a>
+        </td>
+
+        <!-- ASSIGNEES -->
+        <td class="px-4 py-3">
+          <div class="flex flex-wrap gap-1">
+            {% for assignee in task.assignees.all %}
+              <span class="inline-flex items-center px-2 py-1 bg-gray-100 text-xs text-gray-800 rounded dark:bg-gray-700 dark:text-gray-200">
+                <a href="{% url 'home:user_detail' pk=assignee.id %}">{{ assignee.get_full_name }}</a>
+              </span>&#160&#160
+            {% empty %}
+              <i class="text-xs text-gray-500">No assignees</i>
+            {% endfor %}
+          </div>
+        </td>
+
+        {% if user.is_staff %}
+          <!-- ACTIONS -->
+          <td class="px-4 py-3 space-y-1">
+            &#160<a href="{% url 'teamspace:update_task' pk=task.id %}" class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">Edit</a>
+            <a href="{% url 'teamspace:delete_task' pk=task.id %}" class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-600 ml-1">Delete</a>
+          </td>
+        {% endif %}
+
+        <!-- DESCRIPTION -->
+<td class="px-4 py-3 max-w-sm overflow-auto break-words whitespace-pre-line text-gray-700 dark:text-gray-300">
+  {{ task.description|linebreaksbr }}
+</td>
+
+        <!-- DEADLINE -->
+        <td class="px-4 py-3 text-sm text-gray-500">{{ task.deadline|date:"Y-m-d H:i" }}</td>
+
+        <!-- COMPLETED -->
+        <td class="px-4 py-3 text-lg text-center">
+          {% if task.is_completed %}
+            ✅
+          {% else %}
+            ❌
+            {% if user == task.created_by %}
+              <br>
+              <a href="{% url 'teamspace:complete_task' pk=task.id %}" class="text-xs text-white bg-green-500 hover:bg-green-600 rounded px-2 py-1">Mark</a>
+            {% endif %}
+          {% endif %}
+        </td>
+
+        <!-- STATUS -->
+        <td class="px-4 py-3">
+        {% if user in task.assignees.all %}
+          <a href="{% url 'teamspace:status_task' pk=task.id %}">
+          {% if task.get_priority_display == "To Do" %}
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-600 ml-1">ToDo</span>
+          {% elif task.get_priority_display == "In Progress" %}
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">Progress</span>
+          {% else %}
+            <span class="text-xs text-white bg-green-500 hover:bg-green-600 rounded px-2 py-1">&#160Done</span>
+          {% endif %}
+          </a>
+          {% else %}
+          {% if task.get_priority_display == "To Do" %}
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-600 ml-1">ToDo</span>
+          {% elif task.get_priority_display == "In Progress" %}
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">Progress</span>
+          {% else %}
+            <span class="text-xs text-white bg-green-500 hover:bg-green-600 rounded px-2 py-1">Done</span>
+          {% endif %}
+          {% endif %}
+        </td>
+
+        <!-- TYPE -->
+        <td class="px-4 py-3">{{ task.task_type.name }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+    </div>
+  {% else %}
+    <p class="mt-4 text-gray-600 dark:text-gray-300">No tasks assigned to this project.</p>
+  {% endif %}
+</div>
+{% endblock %}

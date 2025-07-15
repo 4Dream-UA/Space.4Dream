@@ -1,0 +1,87 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+  <div class="p-4 ml-64">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">All Teams</h1>
+
+      {% if user.is_staff %}
+        <div class="flex flex-wrap gap-2 mb-4">
+          <a href="{% url 'teamspace:create_team' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded bg-blue-700 hover:bg-blue-800 hover:text-white">
+            Create Team
+          </a>
+          <a href="{% url 'home:invite' %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded bg-blue-700 hover:bg-blue-800 hover:text-white">
+            Invite
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+    {% include 'includes/search.html' %}
+
+    <div class="overflow-x-auto mt-4 rounded-lg shadow">
+      <table class="min-w-full text-sm text-left text-gray-700 bg-white dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+          <tr>
+            <th class="px-4 py-3">#</th>
+            <th class="px-4 py-3">Team Name</th>
+            {% if user.is_staff %}
+              <th class="px-4 py-3">Action</th>
+            {% endif %}
+            <th class="px-4 py-3">Description</th>
+            <th class="px-4 py-3">Members</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for team in teams %}
+            <tr class="border-t border-gray-200 dark:border-gray-700">
+              <td class="px-4 py-2">{{ forloop.counter }}</td>
+              <td class="px-4 py-2">
+
+                  {{ team.name }}
+
+              </td>
+              {% if user.is_staff %}
+                <td class="px-4 py-2">
+                  <div class="flex gap-2">
+                    <a href="{% url 'teamspace:edit_team' pk=team.id %}" class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">
+                      Edit
+                    </a>
+                    <a href="{% url 'teamspace:delete_team' pk=team.id %}" class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700">
+                      Delete
+                    </a>
+                  </div>
+                </td>
+              {% endif %}
+              <td class="px-4 py-2">{{ team.description|default:"—" }}</td>
+              <td class="px-4 py-2">
+                <div class="flex flex-wrap gap-2 max-w-md">
+                  {% for member in team.workers.all %}
+                    <a href="{% url 'home:user_detail' pk=member.id %}" class="flex items-center gap-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition text-xs">
+                      {% if member.avatar %}
+                        <img src="{{ member.avatar.url }}" alt="Avatar" class="w-5 h-5 rounded-full object-cover">
+                      {% else %}
+                        <span>👤</span>
+                      {% endif %}
+                      <span>{{ member.first_name }}</span>
+                    </a>
+                  {% empty %}
+                    <span class="text-gray-400 italic">No members</span>
+                  {% endfor %}
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="{% if user.is_staff %}5{% else %}4{% endif %}" class="px-4 py-6 text-center text-gray-500 italic">
+                No teams found.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% include 'includes/pagination.html' %}
+  </div>
+{% endblock %}
