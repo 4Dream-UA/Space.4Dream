@@ -5,6 +5,8 @@
 *.log
 *.pot
 *.pyc
+*.crt
+*.key
 future.txt
 __pycache__/
 local_settings.py
