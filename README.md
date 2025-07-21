@@ -36,7 +36,7 @@ Space 4Dream is a modern business project management system that brings everythi
 
 1.  Clone the repository: 
     ```bash
-    1. git clone https://github.com/4Dream-UA/space_4Dream.git
+    1. git clone https://github.com/4Dream-UA/Space.4Dream.git
     ```
 2.  Create a virtual environment:
     ```bash
