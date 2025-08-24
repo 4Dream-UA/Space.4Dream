@@ -2,7 +2,9 @@
 
 Space 4Dream is a modern business project management system that brings everything you need into one place — from task planning to document storage. Built for teams that value clarity, speed, and structure at every stage of their work.
 
-<strong>Navigation:
+
+<strong>Navigation:<br>
+<a href="https://discord.gg/6MbYCn2MpH">4Dream Community</a>
 * [Demo](#demo)
 * [Technologies](#technologies)
 * [Features](#features)
@@ -82,3 +84,4 @@ Space 4Dream is a modern business project management system that brings everythi
     python manage.py runserver 8000
    // http://127.0.0.1:8000/
    ```
+
