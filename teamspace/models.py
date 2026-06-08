@@ -19,21 +19,24 @@ class Position(models.Model):
 
 
 class Worker(AbstractUser):
-    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True, blank=True)
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
     position_priority = models.PositiveSmallIntegerField(default=99)
 
     def save(self, *args, **kwargs):
         priority = priority_returning()
-        if self.position.rank != "Employee":
-            self.position_priority = priority.get(f"{self.position.rank} {self.position.name}", 99)
-        else:
-            self.position_priority = priority.get(self.position.name, 99)
+
+        if getattr(self, 'position_id', None) is not None:
+            if self.position.rank != "Employee":
+                self.position_priority = priority.get(f"{self.position.rank} {self.position.name}", 99)
+            else:
+                self.position_priority = priority.get(self.position.name, 99)
 
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"({self.position.name}) {self.first_name} {self.last_name}"
+        pos_name = self.position.name if hasattr(self, 'position') and self.position else "No Position"
+        return f"({pos_name}) {self.first_name} {self.last_name}"
 
     class Meta:
         ordering = ["position_priority", "last_name"]
@@ -47,7 +50,6 @@ class TaskType(models.Model):
 
 
 class Task(models.Model):
-
     class Status(models.TextChoices):
         TODO = 'todo', 'To Do'
         IN_PROGRESS = 'in_progress', 'In Progress'
@@ -59,7 +61,7 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(
         max_length=63,
-        choices=Status.choices, # noqa -> PyCharm can light it as issue, actually is OK
+        choices=Status.choices,  # noqa -> PyCharm can light it as issue, actually is OK
         default=Status.TODO,
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
