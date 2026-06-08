@@ -18,9 +18,9 @@ class Worker(AbstractUser):
         USER = "user", "User"
 
     role = models.CharField(
-        max_length=20, choices=Role.choices, default=Role.USER, verbose_name="Роль"
+        max_length=20, choices=Role.choices, default=Role.USER, verbose_name="Role"
     )
-    age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Вік")
+    age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Age")
 
     linkedin_url = models.URLField(
         max_length=255, null=True, blank=True, verbose_name="LinkedIn"
@@ -146,3 +146,40 @@ class Document(models.Model):
 
     class Meta:
         ordering = ["date"]
+
+
+class SystemSetting(models.Model):
+    log_retention_days = models.PositiveIntegerField(
+        default=30, verbose_name="How many days to keep logs"
+    )
+
+    class Meta:
+        verbose_name = "System Setting"
+        verbose_name_plural = "System Settings"
+
+    def save(self, *args, **kwargs):
+        if not self.pk and SystemSetting.objects.exists():
+            return
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Settings (Keep logs for {self.log_retention_days} days)"
+
+
+class ActionLog(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    method = models.CharField(max_length=10)
+    path = models.CharField(max_length=255)
+    status_code = models.PositiveIntegerField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-timestamp"]
+        verbose_name = "User Action Log"
+        verbose_name_plural = "User Action Logs"
+
+    def __str__(self):
+        username = self.user.username if self.user else "Anonymous"
+        return f"[{self.timestamp.strftime('%Y-%m-%d %H:%M')}] {username} -> {self.method} {self.path}"
